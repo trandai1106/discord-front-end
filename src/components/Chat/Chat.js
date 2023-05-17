@@ -23,9 +23,9 @@ function Chat() {
         setId(data);
     });
 
-    socketRef.current.on('server-send-data', dataGot => {
-      console.log('Someone says: ' + dataGot.content);
-      setMess(oldMsgs => [...oldMsgs, dataGot]);
+    socketRef.current.on('server-send-data', data => {
+      console.log('Someone says: ' + data.content);
+      setMess(oldMsgs => [...oldMsgs, data]);
       scrollToBottom();
     });
 
@@ -38,7 +38,7 @@ function Chat() {
     if (message !== null && message !== '') {
       const msg = {
         content: message, 
-        id: id
+        access_token: localStorage.getItem('token')
       };
       socketRef.current.emit('client-send-data', msg);
       setMessage('');
@@ -62,7 +62,7 @@ function Chat() {
   }
   
   const renderMess =  mess.map((m, index) => 
-        <div key={index} className={`${m.id === id ? 'your-message' : 'other-people'} chat-item`}>
+        <div key={index} className={`${m.sender_id === localStorage.getItem('id') ? 'your-message' : 'other-people'} chat-item`}>
           {m.content}
         </div>
       )

@@ -11,8 +11,7 @@ const authAPI = {
             if (response.data.status) {
                 localStorage.setItem('token', response.data.data.access_token);
                 store.dispatch(Actions.saveUserToRedux(localStorage.getItem('token')));
-                localStorage.setItem('name', response.data.data.name);
-                localStorage.setItem('role', response.data.data.role);
+                localStorage.setItem('id', response.data.data.id);
                 // console.log("dang nhap oke");
             }
             return response;
@@ -28,8 +27,7 @@ const authAPI = {
             if (response.data.status) {
                 localStorage.setItem('token', response.data.data.access_token);
                 store.dispatch(Actions.saveUserToRedux(localStorage.getItem('token')));
-                localStorage.setItem('name', response.data.data.name);
-                localStorage.setItem('role', response.data.data.role);
+                localStorage.setItem('id', response.data.data.id);
                 // console.log("dang nhap oke");
             }
             return response;
