@@ -16,7 +16,7 @@ function Register() {
             let checkUser = await authAPI.getProfile();
 
             if (checkUser.data.status) {
-                navigate('/');
+                navigate('/public-channel');
             }
             else {
                 // navigate('/auth/login');
@@ -29,8 +29,6 @@ function Register() {
         e.preventDefault();
         if (!(registerInformation.name && registerInformation.password && registerInformation.passwordConfirm)) return;
         else {
-            registerInformation.role = 'customer';
-            registerInformation.name = registerInformation.name;
             // console.log(registerInformation);
 
             const response = await authAPI.register(registerInformation);
@@ -39,7 +37,7 @@ function Register() {
                 // if (registerInformation.role === 'admin') navigate('/admin');
                 // else if (registerInformation.role === 'trainer') navigate('/');
                 // else navigate('/')
-                navigate('/');
+                navigate('/public-channel');
             } 
             else if (response && !response.data.status) {
                 setRegisterFalse(true);

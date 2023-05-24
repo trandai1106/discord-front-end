@@ -37,7 +37,7 @@ function Login() {
             const response = await authAPI.login(loginInformation);
             console.log(response);
             if (response && response.data && response.data.status) {
-                navigate('/chat');
+                navigate('/public-channel');
             } 
             else if (response && !response.data.status) {
                 setLoginFalse(true);
