@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes, useParams } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 import './Chat.css'
 
@@ -7,6 +7,9 @@ const host = "http://localhost:8080";
 
 function Chat() {
   // console.log('searchParams');
+
+  const { to_id } = useParams();
+  console.log('my friend is ' + to_id);
 
   const [mess, setMess] = useState([]);
   const [message, setMessage] = useState('');
@@ -17,13 +20,10 @@ function Chat() {
 
   useEffect(() => {
     socketRef.current = socketIOClient.connect(host);
-  
-    socketRef.current.on('set-socket-id', data => {
-        console.log('my id is ' + data);
-        setId(data);
-    });
 
-    socketRef.current.on('server-send-data', data => {
+    socketRef.current.emit('c_pairID', { id: localStorage.getItem('id'), access_token: localStorage.getItem('token') });
+
+    socketRef.current.on('s_directMessage', data => {
       console.log('Someone says: ' + data.content);
       setMess(oldMsgs => [...oldMsgs, data]);
       scrollToBottom();
@@ -37,11 +37,15 @@ function Chat() {
   const sendMessage = () => {
     if (message !== null && message !== '') {
       const msg = {
+        from_id: localStorage.getItem('id'),
+        to_id: to_id,
         content: message, 
         access_token: localStorage.getItem('token')
       };
-      socketRef.current.emit('client-send-data', msg);
+      socketRef.current.emit('c_directMessage', msg);
+      setMess(oldMsgs => [...oldMsgs, msg]);
       setMessage('');
+      scrollToBottom();
     }
   };
 
@@ -62,7 +66,7 @@ function Chat() {
   }
   
   const renderMess =  mess.map((m, index) => 
-        <div key={index} className={`${m.sender_id === localStorage.getItem('id') ? 'your-message' : 'other-people'} chat-item`}>
+        <div key={index} className={`${m.from_id == localStorage.getItem('id') ? 'your-message' : 'other-people'} chat-item`}>
           {m.content}
         </div>
       )

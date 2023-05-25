@@ -13,8 +13,12 @@ const routes = [
         path: '/auth/register',
         element: <RegisterPage /> // Ok
     },
+    // {
+    //     path: '/public-channel',
+    //     element: <ChatPage /> // Ok
+    // },
     {
-        path: '/public-channel',
+        path: '/direct-message/:to_id',
         element: <ChatPage /> // Ok
     },
     {
