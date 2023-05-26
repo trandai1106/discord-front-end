@@ -22,3 +22,12 @@
   border-style: none;
   background-color: rgb(93, 101, 255);
 }
+
+.user-infor {
+  color: rgb(255, 255, 255);
+}
+
+button {
+  width: 120px;
+  height: 40px;
+}

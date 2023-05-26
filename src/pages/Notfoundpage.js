@@ -1,11 +1,13 @@
 import React from 'react'
+import { Header } from '../components'
 
 function Notfoundpage() {
    
     return (
-        <div>
-            Không tìm thấy trang
-        </div>
+        <>
+            <Header />
+            <div>Không tìm thấy trang</div>
+        </>
     )
 }
 

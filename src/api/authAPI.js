@@ -56,6 +56,10 @@ const authAPI = {
             return response;
         } catch (err) {
             console.log("Error", err);
+            return {
+                status: 0,
+                message: err
+            };
         }
     },
 

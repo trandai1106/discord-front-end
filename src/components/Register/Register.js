@@ -16,7 +16,7 @@ function Register() {
             let checkUser = await authAPI.getProfile();
 
             if (checkUser.data.status) {
-                navigate('/public-channel');
+                navigate('/my-profile');
             }
             else {
                 // navigate('/auth/login');
@@ -37,7 +37,7 @@ function Register() {
                 // if (registerInformation.role === 'admin') navigate('/admin');
                 // else if (registerInformation.role === 'trainer') navigate('/');
                 // else navigate('/')
-                navigate('/public-channel');
+                navigate('/my-profile');
             } 
             else if (response && !response.data.status) {
                 setRegisterFalse(true);
