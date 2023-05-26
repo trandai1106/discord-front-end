@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Routes, useParams } from "react-router-d
 import socketIOClient from "socket.io-client";
 import './Chat.css'
 import chatAPI from '../../api/chatAPI';
+import userAPI from '../../api/userAPI';
 
 const host = "http://localhost:8080";
 
@@ -15,14 +16,14 @@ function Chat() {
   const [mess, setMess] = useState([]);
   const [message, setMessage] = useState('');
   const [id, setId] = useState();
+  var [partner, setPartner] = useState();
 
   const socketRef = useRef();
   const messagesEnd = useRef();
 
   useEffect(() => {
-    // get messages history
-    console.log(chatAPI.getMessages(to_id));
 
+    getMessageHistory();
     // socket
     socketRef.current = socketIOClient.connect(host);
 
@@ -30,14 +31,55 @@ function Chat() {
 
     socketRef.current.on('s_directMessage', data => {
       console.log('Someone says: ' + data.content);
-      setMess(oldMsgs => [...oldMsgs, data]);
-      scrollToBottom();
+
+      if (data.from_id == to_id) {
+        setMess(oldMsgs => [...oldMsgs, data]);
+        scrollToBottom();
+      }
+      if (data.from_id == localStorage.getItem('id')) {
+        setMess(oldMsgs => [...oldMsgs, data]);
+        scrollToBottom();
+      }
     });
 
     return () => {
       socketRef.current.disconnect();
     };
   }, []);
+
+  const getMessageHistory = async () => {
+    const res = await userAPI.getUserInfo(to_id);
+    if (res) {
+      if (res.data) {
+        if (res.data.data) {
+          partner = res.data.data.user
+          setPartner(partner);
+        }
+      }
+    }
+    console.log(await chatAPI.getMessages(to_id));
+
+    const historyChat = await chatAPI.getMessages(to_id);
+    if (historyChat) {
+      if (historyChat.data) {
+        if (historyChat.data.data) {
+          console.log(historyChat.data.data.messages.length);
+          
+          for (var i = 0; i < historyChat.data.data.messages.length; i++) {
+            console.log(i + " - " + historyChat.data.data.messages[i].from_id);
+            const msg = {
+              from_id: historyChat.data.data.messages[i].from_id,
+              to_id: historyChat.data.data.messages[i].to_id,
+              content: historyChat.data.data.messages[i].message,
+              time: historyChat.data.data.messages[i].created_at
+            };
+            setMess(oldMsgs => [...oldMsgs, msg]);
+          }
+          scrollToBottom();
+        }
+      }
+    }
+  };
 
   const sendMessage = () => {
     if (message !== null && message !== '') {
@@ -49,9 +91,7 @@ function Chat() {
         time: Date.now()
       };
       socketRef.current.emit('c_directMessage', msg);
-      setMess(oldMsgs => [...oldMsgs, msg]);
       setMessage('');
-      scrollToBottom();
     }
   };
 
@@ -79,6 +119,8 @@ function Chat() {
     
   return (
       <div class="box-chat">
+        <div>Your id: {localStorage.getItem('id')}</div>
+        <div>You are chatting with : {(partner != null && partner != undefined) ? partner.name + ' - id: ' + partner.id : ''}</div>
         <div class="box-chat-message">
             {renderMess}
             <div style={{ float:"left", clear: "both" }}
