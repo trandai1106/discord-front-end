@@ -2,7 +2,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 
 import styles from './Chat.module.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -16,7 +16,7 @@ import UserProfile from '../../components/UserProfile/UserProfile';
 import AccountSettingsModal from '../../components/AccountSettingsModal/AccountSettingsModal';
 import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
-import * as Actions from "../../store/actions/index";
+import * as Actions from '../../store/actions/index';
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
@@ -34,26 +34,6 @@ function Chat() {
   const [showCallModal, setShowCallModal] = useState(false);
   const [callData, setCallData] = useState(null);
 
-  useEffect(() => {
-    socket.on("directCall", (data) => {
-      setCallData({
-        ...data,
-        type: "directCall"
-      });
-      store.dispatch(Actions.toggleCallModal(true));
-    });
-
-    socket.on("roomCall", (data) => {
-      setCallData({
-        ...data,
-        type: "roomCall"
-      });
-      if (data.from_id !== myUser.id) {
-        store.dispatch(Actions.toggleCallModal(true));
-      }
-    });
-  }, []);
-
   const handleChange = () => {
     state.current = store.getState();
     setShowUserMenu(state.current.context.showUserMenu);
@@ -62,6 +42,26 @@ function Chat() {
     setShowCallModal(state.current.context.showCallModal);
   };
   store.subscribe(handleChange);
+
+  useEffect(() => {
+    socket.on('directCall', (data) => {
+      setCallData({
+        ...data,
+        type: 'directCall',
+      });
+      store.dispatch(Actions.toggleCallModal(true));
+    });
+
+    socket.on('roomCall', (data) => {
+      setCallData({
+        ...data,
+        type: 'roomCall',
+      });
+      if (data.from_id !== myUser.id) {
+        store.dispatch(Actions.toggleCallModal(true));
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -81,7 +81,6 @@ function Chat() {
         </div>
       </div>
     </>
-
   );
 }
 
