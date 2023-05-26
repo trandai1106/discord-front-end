@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {BrowserRouter as Router, Route, Routes, useParams } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 import './Chat.css'
+import chatAPI from '../../api/chatAPI';
 
 const host = "http://localhost:8080";
 
@@ -19,6 +20,10 @@ function Chat() {
   const messagesEnd = useRef();
 
   useEffect(() => {
+    // get messages history
+    console.log(chatAPI.getMessages(to_id));
+
+    // socket
     socketRef.current = socketIOClient.connect(host);
 
     socketRef.current.emit('c_pairID', { id: localStorage.getItem('id'), access_token: localStorage.getItem('token') });
@@ -40,7 +45,8 @@ function Chat() {
         from_id: localStorage.getItem('id'),
         to_id: to_id,
         content: message, 
-        access_token: localStorage.getItem('token')
+        access_token: localStorage.getItem('token'),
+        time: Date.now()
       };
       socketRef.current.emit('c_directMessage', msg);
       setMess(oldMsgs => [...oldMsgs, msg]);
@@ -67,7 +73,7 @@ function Chat() {
   
   const renderMess =  mess.map((m, index) => 
         <div key={index} className={`${m.from_id == localStorage.getItem('id') ? 'your-message' : 'other-people'} chat-item`}>
-          {m.content}
+          {m.content + " " + new Date(m.time).toLocaleString()}
         </div>
       )
     
