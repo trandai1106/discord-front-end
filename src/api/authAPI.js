@@ -14,7 +14,7 @@ const authAPI = {
                 localStorage.setItem('id', response.data.data.id);
                 // console.log("dang nhap oke");
             }
-            return response;
+            return response.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -30,7 +30,7 @@ const authAPI = {
                 localStorage.setItem('id', response.data.data.id);
                 // console.log("dang nhap oke");
             }
-            return response;
+            return response.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -42,7 +42,7 @@ const authAPI = {
             localStorage.removeItem('token');
             store.dispatch(Actions.removeUserOutOfRedux(null))
             const response = await axiosClient.post(url);
-            return response;
+            return response.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -53,7 +53,7 @@ const authAPI = {
         try {
             const url = '/auth/profile';
             const response = await axiosClient.get(url);
-            return response;
+            return response.data;
         } catch (err) {
             console.log("Error", err);
             return {
@@ -67,17 +67,17 @@ const authAPI = {
         try {
             const url = '/auth/profile';
             const response = await axiosClient.put(url, params);
-            return response;
+            return response.data;
         } catch (err) {
             console.log("Error", err);
         }
     },
-    
+
     uploadAvatar: async (params) => {
         try {
             const url = '/image/upload';
             const response = await axiosClient.post(url, params);
-            return response;
+            return response.data;
         } catch (err) {
             alert(err.message);
         }

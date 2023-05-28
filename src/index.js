@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { applyMiddleware, compose, createStore } from 'redux';
@@ -8,7 +7,6 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk';
 
 import appReducers from './store/reducers';
-import { Chat } from './components';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(

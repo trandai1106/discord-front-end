@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-left: 30px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.icon {
+  font-size: 2rem;
+  width: 50px;
+}

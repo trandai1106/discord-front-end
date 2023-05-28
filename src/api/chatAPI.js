@@ -8,7 +8,7 @@ const chatAPI = {
         try {
             const url = '/chat/direct-message/' + to_id;
             const response = await axiosClient.get(url);
-            return response;
+            return response.data;
         } catch (err) {
             console.log("Error", err);
         }

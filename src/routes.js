@@ -1,29 +1,25 @@
 import React from 'react';
-import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
-import ChatPage from './pages/ChatPage';
-import Notfoundpage from './pages/Notfoundpage';
+import Register from "./pages/Register";
+import Login from './pages/Login';
+import Chat from './pages/Chat';
+import NotFound from './pages/NotFound';
 
 const routes = [
     {
-        path: '/auth/login',
-        element: <LoginPage /> // Ok
+        path: '/login',
+        element: <Login />
     },
     {
-        path: '/auth/register',
-        element: <RegisterPage /> // Ok
+        path: '/register',
+        element: <Register />
     },
-    // {
-    //     path: '/public-channel',
-    //     element: <ChatPage /> // Ok
-    // },
     {
-        path: '/direct-message/:to_id',
-        element: <ChatPage /> // Ok
+        path: '/chat',
+        element: <Chat />
     },
     {
         path: '*',
-        element: <Notfoundpage />
+        element: <NotFound />
     },
 ]
 
