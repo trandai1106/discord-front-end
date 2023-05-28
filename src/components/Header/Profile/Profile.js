@@ -17,6 +17,11 @@ function Profile() {
   const [avatar, setAvatar] = useState('');
   const navigate = useNavigate();
 
+  const handleToogleUserMenu = () => {
+    const showUserMenu = store.getState().context.showUserMenu;
+    store.dispatch(Actions.showUserMenu(!showUserMenu));
+  };
+
   useEffect(() => {
     const getUserInfo = async () => {
       const res = await userAPI.getUserInfo(cookies.id);
@@ -28,11 +33,6 @@ function Profile() {
     };
     getUserInfo();
   }, []);
-
-  const handleToogleUserMenu = () => {
-    const showUserMenu = store.getState().context.showUserMenu;
-    store.dispatch(Actions.showUserMenu(!showUserMenu));
-  };
 
   return (
     <div className={cx('wrapper')}>
