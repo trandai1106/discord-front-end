@@ -14,10 +14,7 @@ import userAPI from '../../../api/userAPI';
 const cx = classNames.bind(styles);
 const host = "http://localhost:8080";
 
-function DirectMessage() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const directMessageId = urlParams.get('direct-message');
-
+function DirectMessage({ directMessageId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [partner, setPartner] = useState();
