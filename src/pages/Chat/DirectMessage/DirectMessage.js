@@ -75,28 +75,19 @@ function DirectMessage({ directMessageId }) {
     };
   };
 
-  const makeVideoCall = () => {
-    const msg = {
-      from_id: cookies.id,
-      to_id: directMessageId,
-      content: 'Made a new call',
-      access_token: cookies.access_token,
-      created_at: Date.now(),
-    };
-    socket.emit('c_directMessage', msg);
-
-    const callId = uuid4().toString();
-    socket.emit('directCall', {
-      call_id: callId,
-      from_id: cookies.id,
-      to_id: directMessageId,
-      from_name: myUser.name,
-    });
-    const callWindow = window.open(baseUrl + '/call/' + callId, '_blank', '_self');
-
-    socket.on('rejectedCall', (data) => {
-      callWindow.close();
-    });
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (input !== null && input !== '') {
+      const msg = {
+        from_id: cookies.id,
+        to_id: directMessageId,
+        content: input,
+        access_token: cookies.access_token,
+        created_at: Date.now(),
+      };
+      socket.emit('c_directMessage', msg);
+      setInput('');
+    }
   };
 
   const getMessageHistory = async () => {
@@ -135,6 +126,30 @@ function DirectMessage({ directMessageId }) {
     setIsLoading(false);
   };
 
+  const makeVideoCall = () => {
+    const msg = {
+      from_id: cookies.id,
+      to_id: directMessageId,
+      content: 'Made a new call',
+      access_token: cookies.access_token,
+      created_at: Date.now(),
+    };
+    socket.emit('c_directMessage', msg);
+
+    const callId = uuid4().toString();
+    socket.emit('directCall', {
+      call_id: callId,
+      from_id: cookies.id,
+      to_id: directMessageId,
+      from_name: myUser.name,
+    });
+    const callWindow = window.open(baseUrl + '/call/' + callId, '_blank', '_self');
+
+    socket.on('rejectedCall', (data) => {
+      callWindow.close();
+    });
+  };
+
   const deleteMessage = async (id) => {
     const res = await chatAPI.deleteMessage(id);
     if (res.status === 1) {
@@ -154,21 +169,6 @@ function DirectMessage({ directMessageId }) {
         <div className={cx('item')}>Delete chat</div>
       </div>
     );
-  };
-
-  const sendMessage = (e) => {
-    e.preventDefault();
-    if (input !== null && input !== '') {
-      const msg = {
-        from_id: cookies.id,
-        to_id: directMessageId,
-        content: input,
-        access_token: cookies.access_token,
-        created_at: Date.now(),
-      };
-      socket.emit('c_directMessage', msg);
-      setInput('');
-    }
   };
 
   return (
