@@ -18,7 +18,7 @@ function ProfileOptions() {
 
   return <div className={cx('wrapper')}>
     <div className={cx('inner')}>
-      {/* <div className={cx('item')}>Profile Setting</div> */}
+      <div className={cx('item')}>Profile Setting</div>
       <div className={cx('item')} onClick={logout}>Log out</div>
     </div>
   </div>

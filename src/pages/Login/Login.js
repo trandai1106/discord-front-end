@@ -19,17 +19,12 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const isValidPassword = (password) => {
-    return password.length >= 8 && password.length <= 16 && password.indexOf(' ') === -1;
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!isValidPassword(password)) {
-      alert("Password length must be 8 to 16 characters and not contain any space");
+    if (username === "" || password === "") {
       return;
-    };
+    }
 
     const res = await authAPI.login({
       name: username,
@@ -46,6 +41,26 @@ function Login() {
     }
   };
 
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    if (e.target.value === "") {
+      e.target.placeholder = "* Please enter your username";
+      e.target.parentNode.classList.add(cx('error'));
+    } else {
+      e.target.parentNode.classList.remove(cx('error'));
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (e.target.value === "") {
+      e.target.placeholder = "* Please enter your password";
+      e.target.parentNode.classList.add(cx('error'));
+    } else {
+      e.target.parentNode.classList.remove(cx('error'));
+    }
+  };
+
   return (
     <div className={cx('wrapper')}>
       <div className={cx('inner')}>
@@ -53,11 +68,11 @@ function Login() {
           <h1>Login</h1>
           <div className={cx('input-container')}>
             <FontAwesomeIcon className={cx('input-icon')} icon={faUser} />
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"></input>
+            <input type="text" value={username} onChange={handleUsernameChange} placeholder="Username"></input>
           </div>
           <div className={cx('input-container')}>
             <FontAwesomeIcon className={cx('input-icon')} icon={faKey} />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"></input>
+            <input type="password" value={password} onChange={handlePasswordChange} placeholder="Password"></input>
           </div>
           <div className={cx('btn-container')}>
             <button className={cx('btn', 'active')} type="submit">Login</button>

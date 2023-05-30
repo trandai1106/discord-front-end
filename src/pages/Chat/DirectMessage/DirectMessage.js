@@ -5,6 +5,7 @@ import socketIOClient from "socket.io-client";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import ScrollableFeed from 'react-scrollable-feed';
 
 import styles from "./DirectMessage.module.scss";
 import Message from "../../../components/Message";
@@ -19,7 +20,9 @@ function DirectMessage({ directMessageId }) {
   const [input, setInput] = useState('');
   const [partner, setPartner] = useState();
   const [cookies, setCookies] = useCookies();
+  // const [sendersInfo, setSendersInfo] = useState([]);
 
+  const sendersInfo = useRef({ length: 0 });
   const socketRef = useRef();
   const messagesEnd = useRef();
 
@@ -34,11 +37,9 @@ function DirectMessage({ directMessageId }) {
 
       if (data.from_id == directMessageId) {
         setMessages(oldMsgs => [...oldMsgs, data]);
-        scrollToBottom();
       }
       if (data.from_id == cookies.id) {
         setMessages(oldMsgs => [...oldMsgs, data]);
-        scrollToBottom();
       }
     });
 
@@ -50,7 +51,6 @@ function DirectMessage({ directMessageId }) {
   const getMessageHistory = async () => {
     const res = await userAPI.getUserInfo(directMessageId);
     if (res) {
-      console.log(res.data.user);
       setPartner(res.data.user);
     }
 
@@ -65,9 +65,24 @@ function DirectMessage({ directMessageId }) {
             time: historyChat.data.messages[i].created_at
           };
           setMessages(oldMsgs => [...oldMsgs, msg]);
+
+          if (sendersInfo.current[msg.from_id] === undefined) {
+            const newSender = await getUserInfo(msg.from_id);
+            sendersInfo.current.length++;
+            sendersInfo.current[msg.from_id] = newSender;
+            console.log(sendersInfo.current);
+          }
         }
-        scrollToBottom();
       }
+    }
+  };
+
+  const getUserInfo = async (id) => {
+    const res = await userAPI.getUserInfo(id);
+    return {
+      username: res.data.user.name,
+      // avartar: res.data.user.avatar
+      avatar: "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
     }
   };
 
@@ -86,36 +101,34 @@ function DirectMessage({ directMessageId }) {
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEnd.current.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <div className={cx('wrapper')}>
       <div className={cx('main')}>
         <div className={cx('channel-name')}>
           <p>{partner ? partner.name : ''}</p>
         </div>
-        <div
+        <ScrollableFeed
           className={cx('messages')}
           ref={messagesEnd}
         >
-          {messages.map((m, index) => (
-            <Message
-              message={m.content}
-              timestamp={m.time.toLocaleString()}
-              userId={m.from_id}
-              key={index}
-            />
-          ))}
-        </div>
+          {messages.map((m, index) =>
+            sendersInfo.current[m.from_id] && (
+              <Message
+                message={m.content}
+                timestamp={m.time.toLocaleString()}
+                username={sendersInfo.current[m.from_id].username}
+                avatar={sendersInfo.current[m.from_id].avatar}
+                key={index}
+              />
+            ))}
+        </ScrollableFeed>
         <form onSubmit={sendMessage}>
           <div className={cx('input-container')}>
             <input
               className={cx('input')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Send a message to #${partner ? partner.name : ''}`}
+              placeholder={`Send a message to ${partner ? partner.name : ''}`}
             />
             <FontAwesomeIcon
               className={cx('icon')}

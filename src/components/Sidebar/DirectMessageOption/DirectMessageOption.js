@@ -20,13 +20,13 @@ function DirectMessageOption({ title, id }) {
   //Fake user information
   const user = {
     useId: 1,
-    name: "Alice",
-    avatar: "https://avatars.githubusercontent.com/u/1234?v=4",
+    name: "dat2",
+    avatar: "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg",
   };
 
   return (
-    <Link 
-      className={cx("wrapper")} 
+    <Link
+      className={cx("wrapper")}
       to={`?direct-message=${id}`}>
       <img className={cx("user-profile")} src={user.avatar} alt="" />
       <span className={cx("title")}>{title}</span>

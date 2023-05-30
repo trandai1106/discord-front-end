@@ -6,20 +6,7 @@ import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
 
-function Message({ message, timestamp, userId }) {
-  const [userName, setUsername] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const res = await userAPI.getUserInfo(userId);
-      console.log(res.data.user);
-      setUsername(res.data.user.name);
-      setUserAvatar(res.data.user.avatar);
-    };
-    getUserInfo();
-  }, []);
-
+function Message({ message, timestamp, username, avatar }) {
   const formattedDate = (timestamp) => {
     const messageDate = new Date(timestamp);
     const year = messageDate.getFullYear();
@@ -42,10 +29,10 @@ function Message({ message, timestamp, userId }) {
 
   return (
     <div className={cx("message")}>
-      <img src={userAvatar} alt="" />
+      <img src={avatar} alt="" />
       <div className={cx("message-info")}>
         <h4>
-          {userName}
+          {username ? username : "..."}
           <span className={cx("message-timestamp")}>
             {formattedDate(timestamp)}
           </span>
