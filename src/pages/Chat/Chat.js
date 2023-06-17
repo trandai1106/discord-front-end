@@ -10,7 +10,7 @@ import DirectMessage from "./DirectMessage/DirectMessage";
 import Welcome from "./Welcome/Welcome";
 import store from "../../store/store";
 import UserMenu from "../../components/UserMenu/UserMenu";
-import UserProfile from "../../components/ProfileSetting/UserProfile";
+import UserProfile from "../../components/UserProfile/UserProfile";
 
 const cx = classNames.bind(styles);
 

@@ -61,6 +61,9 @@ function UserProfile() {
         <FontAwesomeIcon icon={faXmark} />
       </div>
     </div>
+    <div className={cx("content")}>
+
+    </div>
   </div>
 }
 
