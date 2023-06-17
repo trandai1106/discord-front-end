@@ -14,10 +14,7 @@ function UserMenu() {
   const userId = useCookies('id');
 
   const handleToogleUserProfile = () => {
-    store.dispatch(Actions.toogleUserProfile({
-      state: true,
-      userId: userId
-    }));
+    store.dispatch(Actions.toogleUserProfile(true));
     store.dispatch(Actions.toogleUserMenu(false));
   };
 

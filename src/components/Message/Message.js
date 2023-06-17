@@ -1,8 +1,6 @@
 import classNames from "classnames/bind";
 
 import styles from "./Message.module.scss";
-import userAPI from "../../api/userAPI";
-import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
 

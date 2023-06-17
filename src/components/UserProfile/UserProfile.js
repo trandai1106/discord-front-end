@@ -1,24 +1,35 @@
 import classNames from "classnames/bind";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import styles from "./UserProfile.module.scss";
 import store from "../../store/store";
 import * as Actions from "../../store/actions/index";
+import userAPI from "../../api/userAPI";
 
 const cx = classNames.bind(styles);
 
-function UserProfile() {
+function UserProfile({ userId }) {
   const [width, setWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
+  const [name, setName] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
 
   const handleClose = () => {
-    store.dispatch(Actions.toogleUserProfile({
-      state: false,
-      userId: ""
-    }));
+    store.dispatch(Actions.toogleUserProfile(false));
   };
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const res = await userAPI.getUserInfo(userId);
+      setName(res.data.user.name);
+      setAvatar(res.data.user.avatar);
+      console.log(res);
+    };
+    getUserInfo();
+  }, []);
 
   // Setups for adjusting profile setting width
   const handleMouseDown = (event) => {
@@ -62,7 +73,10 @@ function UserProfile() {
       </div>
     </div>
     <div className={cx("content")}>
-
+      <div className={cx("user-container")}>
+        <img src={avatarBaseUrl + avatar}></img>
+        <div className={cx("username")}>{name}</div>
+      </div>
     </div>
   </div>
 }

@@ -28,9 +28,9 @@ export const toogleUserMenu = (show) => {
     }
 }
 
-export const toogleUserProfile = ({ state, userId }) => {
+export const toogleUserProfile = (show) => {
     return {
         type: Types.TOGGLE_USER_PROFILE,
-        payload: { state, userId }
+        payload: show
     }
 }

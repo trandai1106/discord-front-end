@@ -3,10 +3,7 @@ import * as Types from '../constants/ActionTypes';
 export const initialState = {
   isLoading: false,
   showUserMenu: false,
-  showUserProfile: {
-    state: false,
-    userId: "",
-  },
+  showUserProfile: false,
 }
 
 const context = (state = initialState, action) => {

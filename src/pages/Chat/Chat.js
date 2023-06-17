@@ -11,6 +11,7 @@ import Welcome from "./Welcome/Welcome";
 import store from "../../store/store";
 import UserMenu from "../../components/UserMenu/UserMenu";
 import UserProfile from "../../components/UserProfile/UserProfile";
+import { useCookies } from "react-cookie";
 
 const cx = classNames.bind(styles);
 
@@ -22,12 +23,12 @@ function Chat() {
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [cookies] = useCookies();
 
   const handleChange = () => {
     state.current = store.getState();
-    console.log(state.current.context);
     setShowUserMenu(state.current.context.showUserMenu);
-    setShowUserProfile(state.current.context.showUserProfile.state);
+    setShowUserProfile(state.current.context.showUserProfile);
   }
   store.subscribe(handleChange);
 
@@ -51,7 +52,7 @@ function Chat() {
             <Welcome />
           }
         </div>
-        {showUserProfile && <UserProfile />}
+        {showUserProfile && <UserProfile userId={cookies.id} />}
       </div>
     </div>
   );

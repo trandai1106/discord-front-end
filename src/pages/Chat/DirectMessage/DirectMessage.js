@@ -14,6 +14,7 @@ import userAPI from '../../../api/userAPI';
 
 const cx = classNames.bind(styles);
 const host = "http://localhost:8080";
+const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
 
 function DirectMessage({ directMessageId }) {
   const [messages, setMessages] = useState([]);
@@ -21,7 +22,6 @@ function DirectMessage({ directMessageId }) {
   const [partner, setPartner] = useState();
   const [cookies, setCookies] = useCookies();
   // const [sendersInfo, setSendersInfo] = useState([]);
-
   const sendersInfo = useRef({ length: 0 });
   const socketRef = useRef();
   const messagesEnd = useRef();
@@ -68,9 +68,9 @@ function DirectMessage({ directMessageId }) {
 
           if (sendersInfo.current[msg.from_id] === undefined) {
             const newSender = await getUserInfo(msg.from_id);
+            console.log(newSender);
             sendersInfo.current.length++;
             sendersInfo.current[msg.from_id] = newSender;
-            console.log(sendersInfo.current);
           }
         }
       }
@@ -79,11 +79,11 @@ function DirectMessage({ directMessageId }) {
 
   const getUserInfo = async (id) => {
     const res = await userAPI.getUserInfo(id);
-    return {
+    const result = {
       username: res.data.user.name,
-      // avartar: res.data.user.avatar
-      avatar: "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+      avatar: avatarBaseUrl + res.data.user.avatar
     }
+    return result;
   };
 
   const sendMessage = (e) => {
