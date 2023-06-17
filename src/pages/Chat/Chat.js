@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Chat.module.scss";
@@ -9,6 +9,8 @@ import Header from "../../components/Header/Header";
 import DirectMessage from "./DirectMessage/DirectMessage";
 import Welcome from "./Welcome/Welcome";
 import store from "../../store/store";
+import UserMenu from "../../components/UserMenu/UserMenu";
+import UserProfile from "../../components/ProfileSetting/UserProfile";
 
 const cx = classNames.bind(styles);
 
@@ -17,17 +19,27 @@ function Chat() {
   const directMessageId = urlParams.get('direct-message');
   const channelId = urlParams.get('channel');
   const navigate = useNavigate();
-  const state = store.getState();
+  const state = useRef(store.getState());
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState(false);
+
+  const handleChange = () => {
+    state.current = store.getState();
+    console.log(state.current.context);
+    setShowUserMenu(state.current.context.showUserMenu);
+    setShowUserProfile(state.current.context.showUserProfile.state);
+  }
+  store.subscribe(handleChange);
 
   useEffect(() => {
-    console.log(state);
-    if (!state.auth.isLoggedIn) {
+    if (!state.current.auth.isLoggedIn) {
       navigate("/login");
     }
-  }, [state.auth.isLoggedIn]);
+  }, [state.current.auth.isLoggedIn]);
 
   return (
     <div className={cx('wrapper')}>
+      {showUserMenu && <UserMenu />}
       <Header />
       <div className={cx('container')}>
         <Sidebar />
@@ -39,6 +51,7 @@ function Chat() {
             <Welcome />
           }
         </div>
+        {showUserProfile && <UserProfile />}
       </div>
     </div>
   );

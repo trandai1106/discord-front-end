@@ -2,7 +2,7 @@ import * as Types from '../constants/ActionTypes';
 
 export const initialState = {
   isLoading: false,
-  showProfileSettings: false,
+  showUserMenu: false,
   showUserProfile: {
     state: false,
     userId: "",
@@ -12,11 +12,20 @@ export const initialState = {
 const context = (state = initialState, action) => {
   switch (action.type) {
     case Types.TOGGLE_IS_LOADING:
-      state.isLoading = action.payload;
-    case Types.TOGGLE_PROFILE_SETTINGS:
-      state.showProfileSettings = action.payload;
+      return {
+        ...state,
+        isLoading: action.payload
+      };
+    case Types.TOGGLE_USER_MENU:
+      return {
+        ...state,
+        showUserMenu: action.payload
+      };
     case Types.TOGGLE_USER_PROFILE:
-      state.showUserProfile = action.payload;
+      return {
+        ...state,
+        showUserProfile: action.payload
+      };
     default: return state;
   }
 }

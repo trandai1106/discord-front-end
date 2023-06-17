@@ -1,20 +1,23 @@
 import classNames from "classnames/bind";
-import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-import styles from "./ProfileSetting.module.scss";
+import styles from "./UserProfile.module.scss";
+import store from "../../store/store";
+import * as Actions from "../../store/actions/index";
 
 const cx = classNames.bind(styles);
 
-function ProfileSetting() {
-  const dispatch = useDispatch();
+function UserProfile() {
   const [width, setWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
 
-  const toggleProfileSetting = () => {
-    dispatch({ type: 'TOGGLE_PROFILE_SETTING' });
+  const handleClose = () => {
+    store.dispatch(Actions.toogleUserProfile({
+      state: false,
+      userId: ""
+    }));
   };
 
   // Setups for adjusting profile setting width
@@ -27,7 +30,8 @@ function ProfileSetting() {
   const handleMouseMove = (event) => {
     if (isResizing) {
       setWidth(window.innerWidth - event.clientX);
-      console.log('mouseMove', window.innerWidth - event.clientX);
+    } else {
+      event.target.classList.remove(cx('resize-active'));
     }
   };
 
@@ -37,8 +41,8 @@ function ProfileSetting() {
   };
 
   const handleMouseUp = (event) => {
-    setIsResizing(false);
     event.target.classList.remove(cx('resize-active'));
+    setIsResizing(false);
   };
 
   return <div className={cx('wrapper')} style={{ width: width }}>
@@ -53,11 +57,11 @@ function ProfileSetting() {
     </div>
     <div className={cx('header')}>
       <p>Profile</p>
-      <div onClick={toggleProfileSetting} className={cx('icon')}>
+      <div onClick={handleClose} className={cx('icon')}>
         <FontAwesomeIcon icon={faXmark} />
       </div>
     </div>
   </div>
 }
 
-export default ProfileSetting;
+export default UserProfile;

@@ -2,7 +2,7 @@ import * as Types from '../constants/ActionTypes';
 
 
 export const initialState = {
-    isLoggedIn: false,
+    isLoggedIn: null,
     user: null
 }
 

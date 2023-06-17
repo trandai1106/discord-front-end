@@ -21,9 +21,16 @@ export const toggleIsLoading = (isLoading) => {
     }
 }
 
-export const toogleProfileSettings = (show) => {
+export const toogleUserMenu = (show) => {
     return {
-        type: Types.TOGGLE_PROFILE_SETTINGS,
+        type: Types.TOGGLE_USER_MENU,
         payload: show
+    }
+}
+
+export const toogleUserProfile = ({ state, userId }) => {
+    return {
+        type: Types.TOGGLE_USER_PROFILE,
+        payload: { state, userId }
     }
 }

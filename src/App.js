@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { useDispatch } from 'react-redux';
 
 import * as Actions from './store/actions';
 import GlobalStyles from "./components/GlobalStyles/GlobalStyles";
