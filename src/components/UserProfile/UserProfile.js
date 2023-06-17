@@ -29,18 +29,16 @@ function UserProfile() {
   const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(false);
 
+  const handleUserEdit = () => {
+    store.dispatch(Actions.showProfileSettingsModal(true));
+  };
+
   const handleClose = () => {
     store.dispatch(
       Actions.showUserProfile({
         state: false,
         userId: '',
       }),
-    );
-  };
-
-  const handleUserEdit = () => {
-    store.dispatch(
-      Actions.showProfileSettingsModal(true)
     );
   };
 
@@ -60,13 +58,13 @@ function UserProfile() {
       setName(res.data.user.name);
       setAvatar(res.data.user.avatar);
       setEmail(res.data.user.email);
-      socket.emit("checkOnlineUserList", cookies.id);
+      socket.emit('checkOnlineUserList', cookies.id);
     };
     if (userId !== '') {
       getUserInfo();
     }
 
-    socket.on("updateUserOnlineList", (data) => {
+    socket.on('updateUserOnlineList', (data) => {
       if (data.includes(userId)) {
         setIsOnline(true);
       } else {
@@ -74,13 +72,6 @@ function UserProfile() {
       }
     });
   }, [userId]);
-
-  // Setups for adjusting profile setting width
-  const handleMouseDown = (event) => {
-    event.preventDefault();
-    event.target.classList.add(cx('resize-active'));
-    setIsResizing(true);
-  };
 
   const handleMouseMove = (event) => {
     if (isResizing) {
@@ -90,12 +81,19 @@ function UserProfile() {
     }
   };
 
-  const handleMouseLeave = (event) => {
+  // Setups for adjusting profile setting width
+  const handleMouseDown = (event) => {
+    event.preventDefault();
+    event.target.classList.add(cx('resize-active'));
+    setIsResizing(true);
+  };
+
+  const handleMouseUp = (event) => {
     event.target.classList.remove(cx('resize-active'));
     setIsResizing(false);
   };
 
-  const handleMouseUp = (event) => {
+  const handleMouseLeave = (event) => {
     event.target.classList.remove(cx('resize-active'));
     setIsResizing(false);
   };
@@ -131,7 +129,7 @@ function UserProfile() {
             ) : (
               <>
                 <Link to={`?direct-message=${userId}`} className={cx('chat')}>
-                  Chat with {name} {isOnline ? " - online" : " - offline"}
+                  Chat with {name} {isOnline ? ' - online' : ' - offline'}
                 </Link>
               </>
             )}
