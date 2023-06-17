@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
 
 import styles from "./Register.module.scss";
 import authAPI from '../../api/authAPI';
@@ -16,9 +14,7 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const isValidPassword = (password) => {
     return password.length >= 8 && password.length <= 16 && password.indexOf(' ') === -1;
@@ -47,9 +43,6 @@ function Register() {
     });
 
     if (res.status === 1) {
-      setCookie('access_token', res.data.access_token, { path: '/' });
-      setCookie('refresh_token', res.data.refresh_token, { path: '/' });
-      setCookie('id', res.data.id, { path: '/' });
       navigate("/chat");
     } else {
       alert(res.message);

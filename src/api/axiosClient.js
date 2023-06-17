@@ -14,11 +14,18 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use(async (config) => {
-    let token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    try {
+        const cookies = document.cookie.split(';');
+        const token = cookies.filter(cookie => cookie.indexOf("access_token") !== -1)[0].split('=')[1];
+
+        console.log(token);
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    } catch (err) {
+        return config;
     }
-    return config;
 })
 
 axiosClient.interceptors.response.use((response) => {

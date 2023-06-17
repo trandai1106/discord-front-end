@@ -1,11 +1,11 @@
 import classNames from "classnames/bind";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, redirect } from "react-router-dom";
 import { useCookies } from 'react-cookie';
-import { useDispatch } from "react-redux";
 
 import styles from "./Login.module.scss";
 import authAPI from '../../api/authAPI';
@@ -15,9 +15,7 @@ const cx = classNames.bind(styles);
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,9 +30,6 @@ function Login() {
     });
 
     if (res.status === 1) {
-      setCookie('access_token', res.data.access_token, { path: '/' });
-      setCookie('refresh_token', res.data.refresh_token, { path: '/' });
-      setCookie('id', res.data.id, { path: '/' });
       navigate("/chat");
     } else {
       alert(res.message);

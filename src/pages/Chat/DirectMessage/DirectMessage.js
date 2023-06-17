@@ -8,7 +8,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import ScrollableFeed from 'react-scrollable-feed';
 
 import styles from "./DirectMessage.module.scss";
-import Message from "../../../components/Message";
+import Message from "../../../components/Message/Message";
 import chatAPI from '../../../api/chatAPI';
 import userAPI from '../../../api/userAPI';
 

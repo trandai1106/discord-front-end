@@ -1,20 +1,20 @@
-import axiosClient from "./axiosClient"
-import * as Actions from "./../store/actions"
-import { store } from './../index'
-
+import axiosClient from "./axiosClient";
+import * as Actions from "./../store/actions";
+import store from "../store/store";
 
 const authAPI = {
     register: async (params) => {
         try {
             const url = '/auth/register';
-            const response = await axiosClient.post(url, params);
-            if (response.data.status) {
-                localStorage.setItem('token', response.data.data.access_token);
-                store.dispatch(Actions.saveUserToRedux(localStorage.getItem('token')));
-                localStorage.setItem('id', response.data.data.id);
-                // console.log("dang nhap oke");
+            const res = await axiosClient.post(url, params);
+            if (res.data.status) {
+                const token = res.data.data.access_token;
+                const id = res.data.data.id;
+                document.cookie = `access_token=${token}; path=/`;
+                document.cookie = `id=${id}; path=/`;
+                store.dispatch(Actions.saveUserToRedux({ id, token }));
             }
-            return response.data;
+            return res.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -23,14 +23,15 @@ const authAPI = {
     login: async (params) => {
         try {
             const url = '/auth/login';
-            const response = await axiosClient.post(url, params);
-            if (response.data.status) {
-                localStorage.setItem('token', response.data.data.access_token);
-                store.dispatch(Actions.saveUserToRedux(localStorage.getItem('token')));
-                localStorage.setItem('id', response.data.data.id);
-                // console.log("dang nhap oke");
+            const res = await axiosClient.post(url, params);
+            if (res.data.status) {
+                const token = res.data.data.access_token;
+                const id = res.data.data.id;
+                document.cookie = `access_token=${token}; path=/`;
+                document.cookie = `id=${id}; path=/`;
+                store.dispatch(Actions.saveUserToRedux({ id, token }));
             }
-            return response.data;
+            return res.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -39,10 +40,11 @@ const authAPI = {
     logout: async () => {
         try {
             const url = '/auth/logout';
-            localStorage.removeItem('token');
+            document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = 'id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             store.dispatch(Actions.removeUserOutOfRedux(null))
-            const response = await axiosClient.post(url);
-            return response.data;
+            const res = await axiosClient.post(url);
+            return res.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -52,8 +54,8 @@ const authAPI = {
     getProfile: async () => {
         try {
             const url = '/auth/profile';
-            const response = await axiosClient.get(url);
-            return response.data;
+            const res = await axiosClient.get(url);
+            return res.data;
         } catch (err) {
             console.log("Error", err);
             return {
@@ -66,8 +68,8 @@ const authAPI = {
     updateProfile: async (params) => {
         try {
             const url = '/auth/profile';
-            const response = await axiosClient.put(url, params);
-            return response.data;
+            const res = await axiosClient.put(url, params);
+            return res.data;
         } catch (err) {
             console.log("Error", err);
         }
@@ -76,8 +78,8 @@ const authAPI = {
     uploadAvatar: async (params) => {
         try {
             const url = '/image/upload';
-            const response = await axiosClient.post(url, params);
-            return response.data;
+            const res = await axiosClient.post(url, params);
+            return res.data;
         } catch (err) {
             alert(err.message);
         }

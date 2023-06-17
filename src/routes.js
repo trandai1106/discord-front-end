@@ -1,17 +1,17 @@
 import React from 'react';
-import Register from "./pages/Register";
-import Login from './pages/Login';
-import Chat from './pages/Chat';
-import NotFound from './pages/NotFound';
+import Register from "./pages/Register/Register";
+import Login from './pages/Login/Login';
+import Chat from './pages/Chat/Chat';
+import NotFound from './pages/NotFound/NotFound';
 
 const routes = [
     {
-        path: '/login',
-        element: <Login />
-    },
-    {
         path: '/register',
         element: <Register />
+    },
+    {
+        path: '/login',
+        element: <Login />
     },
     {
         path: '/chat',
@@ -21,6 +21,6 @@ const routes = [
         path: '*',
         element: <NotFound />
     },
-]
+];
 
 export default routes;

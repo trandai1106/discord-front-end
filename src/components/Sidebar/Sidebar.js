@@ -3,9 +3,9 @@ import { faSortDown, faSortUp, faHashtag, faPlus } from "@fortawesome/free-solid
 import { useState } from "react";
 
 import styles from "./Sidebar.module.scss";
-import SidebarNav from "./SidebarNav";
+import SidebarNav from "./SidebarNav/SidebarNav";
 import ChannelOption from "./ChannelOption/ChannelOption";
-import DirectMessageOption from "./DirectMessageOption";
+import DirectMessageOption from "./DirectMessageOption/DirectMessageOption";
 
 const cx = classNames.bind(styles);
 
@@ -40,7 +40,8 @@ function Sidebar() {
   const handleMouseMove = (event) => {
     if (isResizing) {
       setWidth(event.clientX);
-      console.log('mouseMove', event.clientX);
+    } else {
+      event.target.classList.remove(cx('resize-active'));
     }
   };
 
@@ -50,8 +51,8 @@ function Sidebar() {
   };
 
   const handleMouseUp = (event) => {
-    setIsResizing(false);
     event.target.classList.remove(cx('resize-active'));
+    setIsResizing(false);
   };
 
   return (

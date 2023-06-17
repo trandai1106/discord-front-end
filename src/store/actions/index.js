@@ -13,3 +13,17 @@ export const removeUserOutOfRedux = (userInfor) => {
         payload: userInfor
     }
 }
+
+export const toggleIsLoading = (isLoading) => {
+    return {
+        type: Types.TOGGLE_IS_LOADING,
+        payload: isLoading
+    }
+}
+
+export const toogleProfileSettings = (show) => {
+    return {
+        type: Types.TOGGLE_PROFILE_SETTINGS,
+        payload: show
+    }
+}

@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import { useState, useRef, useEffect } from "react";
 
 import styles from "./Profile.module.scss";
-import ProfileOptions from "../ProfileOptions";
+import ProfileOptions from "../ProfileOptions/ProfileOptions";
 
 const cx = classNames.bind(styles);
 
@@ -13,21 +13,6 @@ function Profile() {
   const toggleProfileOptions = () => {
     setShowProfileOptions(!showProfileOptions);
   };
-
-  // handle click outter
-  // useEffect(() => {
-  //   const handleClick = (event) => {
-  //     if (clickRef.current && !clickRef.current.contains(event.target)) {
-  //       console.log('Clicked outside of the element!');
-  //     }
-  //   };
-
-  //   document.addEventListener('click', handleClick);
-
-  //   return () => {
-  //     document.removeEventListener('click', handleClick);
-  //   };
-  // }, []);
 
   return <div className={cx('wrapper')}>
     <img

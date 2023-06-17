@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
 
 import styles from "./Header.module.scss";
-import Profile from "./Profile";
+import Profile from "./Profile/Profile";
 
 const cx = classNames.bind(styles);
 

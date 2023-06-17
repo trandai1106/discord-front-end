@@ -1,6 +1,7 @@
 import * as Types from '../constants/ActionTypes';
 
-const initialState = {
+
+export const initialState = {
     isLoggedIn: false,
     user: null
 }

@@ -1,38 +1,30 @@
 /* eslint-disable no-unused-expressions */
 import classNames from "classnames/bind";
-import { useCookies } from "react-cookie";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./Chat.module.scss";
-import Sidebar from "../../components/Sidebar";
-import Header from "../../components/Header";
-import DirectMessage from "./DirectMessage";
-import Welcome from "./Welcome";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Header from "../../components/Header/Header";
+import DirectMessage from "./DirectMessage/DirectMessage";
+import Welcome from "./Welcome/Welcome";
+import store from "../../store/store";
 
 const cx = classNames.bind(styles);
 
 function Chat() {
-  const [cookies, setCookies] = useCookies();
-  const navigate = useNavigate();
-
   const urlParams = new URLSearchParams(window.location.search);
   const directMessageId = urlParams.get('direct-message');
   const channelId = urlParams.get('channel');
+  const navigate = useNavigate();
+  const state = store.getState();
 
   useEffect(() => {
-    const checkCookies = () => {
-      if (!cookies.access_token) {
-
-        /*
-          Check cookies on server side?
-        */
-
-        navigate("/login");
-      }
-    };
-    checkCookies();
-  }, []);
+    console.log(state);
+    if (!state.auth.isLoggedIn) {
+      navigate("/login");
+    }
+  }, [state.auth.isLoggedIn]);
 
   return (
     <div className={cx('wrapper')}>
@@ -40,9 +32,6 @@ function Chat() {
       <div className={cx('container')}>
         <Sidebar />
         <div className={cx('content')}>
-          {/* {channelId && <Channel 
-            channelId={channelId}  
-          />} */}
           {directMessageId && !channelId && <DirectMessage
             directMessageId={directMessageId}
           />}
