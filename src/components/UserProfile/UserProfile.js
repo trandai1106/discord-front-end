@@ -1,13 +1,16 @@
 import classNames from "classnames/bind";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import styles from "./UserProfile.module.scss";
 import store from "../../store/store";
 import * as Actions from "../../store/actions/index";
 import userAPI from "../../api/userAPI";
+import authAPI from "../../api/authAPI";
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +24,7 @@ function UserProfile() {
   const [userId, setUserId] = useState(() => {
     return store.getState().context.showUserProfile.userId;
   });
+  const navigate = useNavigate();
 
   const handleClose = () => {
     store.dispatch(Actions.toogleUserProfile({
@@ -38,6 +42,10 @@ function UserProfile() {
   useEffect(() => {
     const getUserInfo = async () => {
       const res = await userAPI.getUserInfo(userId);
+      if (res.status === 0) {
+        authAPI.logout();
+        navigate("login");
+      }
       setName(res.data.user.name);
       setAvatar(res.data.user.avatar);
       console.log(res);
@@ -93,10 +101,16 @@ function UserProfile() {
         <img src={avatarBaseUrl + avatar}></img>
         <div className={cx("details")}>
           <div className={cx("username")}>{name}</div>
-          {userId === cookies.id && <div className={cx("action")}>
-            <FontAwesomeIcon icon={faEdit} />
-            Edit
-          </div>}
+          {userId === cookies.id ?
+            (<div className={cx("edit")}>
+              <FontAwesomeIcon icon={faEdit} />
+              Edit
+            </div>)
+            :
+            <Link to={`?direct-message=${userId}`} className={cx("chat")}>
+              Chat with {name}
+            </Link>
+          }
         </div>
       </div>
     </div>

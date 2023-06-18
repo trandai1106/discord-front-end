@@ -7,12 +7,21 @@ const userAPI = {
     getUserInfo: async (to_id) => {
         try {
             const url = '/users/' + to_id;
-            const response = await axiosClient.get(url);
-            return response.data;
+            const res = await axiosClient.get(url);
+            return res.data;
         } catch (err) {
             console.log("Error", err);
         }
-    }
+    },
+    getAllUsers: async () => {
+        try {
+            const url = '/users/all';
+            const res = await axiosClient.get(url);
+            return res.data;
+        } catch (err) {
+            console.log("Error", err);
+        }
+    },
 }
 
 export default userAPI;

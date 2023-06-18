@@ -1,0 +1,34 @@
+.wrapper {
+  padding: 20px;
+}
+
+.heading {
+  margin-left: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .content-item {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.avatar {
+  img {
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+  }
+}
+
+.name {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}

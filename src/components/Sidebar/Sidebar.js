@@ -1,11 +1,14 @@
 import classNames from "classnames/bind";
-import { faSortDown, faSortUp, faHashtag, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { faSortDown, faSortUp, faHashtag, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./Sidebar.module.scss";
 import SidebarNav from "./SidebarNav/SidebarNav";
 import ChannelOption from "./ChannelOption/ChannelOption";
 import DirectMessageOption from "./DirectMessageOption/DirectMessageOption";
+import chatAPI from "../../api/chatAPI";
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +17,9 @@ function Sidebar() {
   const [showDirectMessages, setShowDirectMessages] = useState(true);
   const [width, setWidth] = useState(300);
   const [isResizing, setIsResizing] = useState(false);
+  const [directMessages, setDirectMessages] = useState([]);
+  const [cookies] = useCookies();
+  const navigate = useNavigate();
 
   // Fake channels 
   const channels = [
@@ -23,12 +29,13 @@ function Sidebar() {
     }
   ];
   // Fake direct message 
-  const directMessages = [
-    {
-      name: "dat2",
-      id: "64722a9611a9b0297c54ae38",
-    }
-  ];
+  useEffect(() => {
+    (async () => {
+      const res = await chatAPI.getContacts(cookies.id);
+      console.log(res.data.contacts);
+      setDirectMessages(res.data.contacts);
+    })();
+  }, []);
 
   // Setups for adjusting sidebar width
   const handleMouseDown = (event) => {
@@ -71,7 +78,12 @@ function Sidebar() {
         <h3>GROUP 10</h3>
       </div>
       <div className={cx("spread")}></div>
-      <div className={cx('list')}>
+      <div className={cx("list")}>
+        <SidebarNav
+          title="People"
+          icon={faUserGroup}
+          onClick={() => { navigate("/chat") }}
+        />
         <SidebarNav
           title="Channels"
           icon={showChannels ? faSortUp : faSortDown}
@@ -93,12 +105,11 @@ function Sidebar() {
           icon={showDirectMessages ? faSortUp : faSortDown}
           onClick={() => setShowDirectMessages(!showDirectMessages)}
         />
-        {showDirectMessages && directMessages.map((element, index) => {
+        {showDirectMessages && directMessages.map((userId, index) => {
           return (
             <DirectMessageOption
               key={index}
-              title={element.name}
-              id={element.id}
+              userId={userId}
             />
           )
         })}

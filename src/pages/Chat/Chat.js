@@ -7,7 +7,7 @@ import styles from "./Chat.module.scss";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Header from "../../components/Header/Header";
 import DirectMessage from "./DirectMessage/DirectMessage";
-import Welcome from "./Welcome/Welcome";
+import People from "./People/People";
 import store from "../../store/store";
 import UserMenu from "../../components/UserMenu/UserMenu";
 import UserProfile from "../../components/UserProfile/UserProfile";
@@ -23,7 +23,6 @@ function Chat() {
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
-  const [cookies] = useCookies();
 
   const handleChange = () => {
     state.current = store.getState();
@@ -49,7 +48,7 @@ function Chat() {
             directMessageId={directMessageId}
           />}
           {!directMessageId && !channelId &&
-            <Welcome />
+            <People />
           }
         </div>
         {showUserProfile && <UserProfile />}

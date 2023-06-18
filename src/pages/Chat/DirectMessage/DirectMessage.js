@@ -6,27 +6,32 @@ import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import ScrollableFeed from 'react-scrollable-feed';
+import { useNavigate } from "react-router-dom";
+import { Spin } from "antd";
 
 import styles from "./DirectMessage.module.scss";
 import Message from "../../../components/Message/Message";
 import chatAPI from '../../../api/chatAPI';
 import userAPI from '../../../api/userAPI';
+import authAPI from "../../../api/authAPI";
 
 const cx = classNames.bind(styles);
 const host = "http://localhost:8080";
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
 
 function DirectMessage({ directMessageId }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [partner, setPartner] = useState();
-  const [cookies, setCookies] = useCookies();
-  // const [sendersInfo, setSendersInfo] = useState([]);
+  const [cookies] = useCookies();
+  const navigate = useNavigate();
   const sendersInfo = useRef({ length: 0 });
   const socketRef = useRef();
   const messagesEnd = useRef();
 
   useEffect(() => {
+    setMessages([]);
     getMessageHistory();
     socketRef.current = socketIOClient.connect(host);
 
@@ -46,10 +51,14 @@ function DirectMessage({ directMessageId }) {
     return () => {
       socketRef.current.disconnect();
     };
-  }, []);
+  }, [directMessageId]);
 
   const getMessageHistory = async () => {
     const res = await userAPI.getUserInfo(directMessageId);
+    if (res.status === 0) {
+      authAPI.logout();
+      navigate("login");
+    }
     if (res) {
       setPartner(res.data.user);
     }
@@ -57,33 +66,34 @@ function DirectMessage({ directMessageId }) {
     const historyChat = await chatAPI.getMessages(directMessageId);
     if (historyChat) {
       if (historyChat.data) {
-        for (let i = 0; i < historyChat.data.messages.length; i++) {
+        const historyMessages = historyChat.data.messages;
+        console.log(historyMessages);
+        for (let i = 0; i < historyMessages.length; i++) {
           const msg = {
-            from_id: historyChat.data.messages[i].from_id,
-            directMessageId: historyChat.data.messages[i].directMessageId,
-            content: historyChat.data.messages[i].message,
-            time: historyChat.data.messages[i].created_at
+            from_id: historyMessages[i].from_id,
+            directMessageId: historyMessages[i].directMessageId,
+            content: historyMessages[i].message,
+            time: historyMessages[i].created_at
           };
           setMessages(oldMsgs => [...oldMsgs, msg]);
 
           if (sendersInfo.current[msg.from_id] === undefined) {
             const newSender = await getUserInfo(msg.from_id);
-            console.log(newSender);
             sendersInfo.current.length++;
             sendersInfo.current[msg.from_id] = newSender;
           }
         }
       }
     }
+    setIsLoading(false);
   };
 
   const getUserInfo = async (id) => {
     const res = await userAPI.getUserInfo(id);
-    const result = {
+    return {
       username: res.data.user.name,
       avatar: avatarBaseUrl + res.data.user.avatar
-    }
-    return result;
+    };
   };
 
   const sendMessage = (e) => {
@@ -111,17 +121,31 @@ function DirectMessage({ directMessageId }) {
           className={cx('messages')}
           ref={messagesEnd}
         >
-          {messages.map((m, index) =>
-            sendersInfo.current[m.from_id] && (
-              <Message
-                userId={m.from_id}
-                message={m.content}
-                timestamp={m.time.toLocaleString()}
-                username={sendersInfo.current[m.from_id].username}
-                avatar={sendersInfo.current[m.from_id].avatar}
-                key={index}
-              />
-            ))}
+          {isLoading ?
+            <div className={cx("loading")}>
+              <Spin size="large" />
+            </div>
+            :
+            <>
+              {messages.length === 0 ? (
+                <h3 className={cx("zero-message")}>Start chat with {partner.name}</h3>
+              ) : (
+                <>
+                  {messages.map((m, index) =>
+                    sendersInfo.current[m.from_id] && (
+                      <Message
+                        userId={m.from_id}
+                        message={m.content}
+                        timestamp={m.time.toLocaleString()}
+                        username={sendersInfo.current[m.from_id].username}
+                        avatar={sendersInfo.current[m.from_id].avatar}
+                        key={index}
+                      />
+                    ))}
+                </>
+              )}
+            </>
+          }
         </ScrollableFeed>
         <form onSubmit={sendMessage}>
           <div className={cx('input-container')}>

@@ -12,7 +12,16 @@ const chatAPI = {
         } catch (err) {
             console.log("Error", err);
         }
+    },
+    getContacts: async (userId) => {
+        try {
+            const url = `/chat/direct-message/contacts/${userId}`;
+            const res = await axiosClient.get(url);
+            return res.data;
+        } catch (err) {
+            console.log("Error", err);
+        }
     }
-}
+};
 
 export default chatAPI;
