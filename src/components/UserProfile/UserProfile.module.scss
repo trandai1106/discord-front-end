@@ -74,9 +74,26 @@
     overflow: hidden;
   }
 
-  .username {
+  .details {
     margin-top: 10px;
-    font-weight: bold;
-    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .username {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .action {
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      color: rgb(83, 83, 255);
+    }
   }
 }

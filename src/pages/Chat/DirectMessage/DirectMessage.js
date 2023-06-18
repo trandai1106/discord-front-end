@@ -114,6 +114,7 @@ function DirectMessage({ directMessageId }) {
           {messages.map((m, index) =>
             sendersInfo.current[m.from_id] && (
               <Message
+                userId={m.from_id}
                 message={m.content}
                 timestamp={m.time.toLocaleString()}
                 username={sendersInfo.current[m.from_id].username}

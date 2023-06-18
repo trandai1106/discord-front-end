@@ -3,8 +3,11 @@ import * as Types from '../constants/ActionTypes';
 export const initialState = {
   isLoading: false,
   showUserMenu: false,
-  showUserProfile: false,
-}
+  showUserProfile: {
+    state: false,
+    userId: "",
+  },
+};
 
 const context = (state = initialState, action) => {
   switch (action.type) {
@@ -19,12 +22,13 @@ const context = (state = initialState, action) => {
         showUserMenu: action.payload
       };
     case Types.TOGGLE_USER_PROFILE:
+      console.log(action.payload);
       return {
         ...state,
         showUserProfile: action.payload
       };
     default: return state;
   }
-}
+};
 
 export default context;

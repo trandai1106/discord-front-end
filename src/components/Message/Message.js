@@ -1,10 +1,12 @@
 import classNames from "classnames/bind";
 
 import styles from "./Message.module.scss";
+import store from "../../store/store";
+import * as Actions from "../../store/actions/index";
 
 const cx = classNames.bind(styles);
 
-function Message({ message, timestamp, username, avatar }) {
+function Message({ message, timestamp, username, avatar, userId }) {
   const formattedDate = (timestamp) => {
     const messageDate = new Date(timestamp);
     const year = messageDate.getFullYear();
@@ -25,12 +27,21 @@ function Message({ message, timestamp, username, avatar }) {
     }
   };
 
+  const handleToggleUserProfile = () => {
+    store.dispatch(Actions.toogleUserProfile({
+      state: true,
+      userId: userId
+    }))
+  };
+
   return (
     <div className={cx("message")}>
       <img src={avatar} alt="" />
-      <div className={cx("message-info")}>
-        <h4>
-          {username ? username : "..."}
+      <div className={cx("content")}>
+        <h4 className={cx("title")} >
+          <div className={cx("username")} onClick={handleToggleUserProfile}>
+            {username ? username : "..."}
+          </div>
           <span className={cx("message-timestamp")}>
             {formattedDate(timestamp)}
           </span>

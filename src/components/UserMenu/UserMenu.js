@@ -11,10 +11,13 @@ const cx = classNames.bind(styles);
 
 function UserMenu() {
   const navigate = useNavigate();
-  const userId = useCookies('id');
+  const [cookies] = useCookies();
 
   const handleToogleUserProfile = () => {
-    store.dispatch(Actions.toogleUserProfile(true));
+    store.dispatch(Actions.toogleUserProfile({
+      state: true,
+      userId: cookies.id
+    }));
     store.dispatch(Actions.toogleUserMenu(false));
   };
 

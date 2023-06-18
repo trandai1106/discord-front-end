@@ -1,7 +1,8 @@
 import classNames from "classnames/bind";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { useCookies } from "react-cookie";
 
 import styles from "./UserProfile.module.scss";
 import store from "../../store/store";
@@ -10,16 +11,29 @@ import userAPI from "../../api/userAPI";
 
 const cx = classNames.bind(styles);
 
-function UserProfile({ userId }) {
+function UserProfile() {
   const [width, setWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [cookies] = useCookies();
   const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
+  const [userId, setUserId] = useState(() => {
+    return store.getState().context.showUserProfile.userId;
+  });
 
   const handleClose = () => {
-    store.dispatch(Actions.toogleUserProfile(false));
+    store.dispatch(Actions.toogleUserProfile({
+      state: false,
+      userId: ""
+    }));
   };
+
+  const handleChange = () => {
+    const storeState = store.getState();
+    setUserId(storeState.context.showUserProfile.userId);
+  }
+  store.subscribe(handleChange);
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -28,8 +42,10 @@ function UserProfile({ userId }) {
       setAvatar(res.data.user.avatar);
       console.log(res);
     };
-    getUserInfo();
-  }, []);
+    if (userId !== "") {
+      getUserInfo();
+    }
+  }, [userId]);
 
   // Setups for adjusting profile setting width
   const handleMouseDown = (event) => {
@@ -75,7 +91,13 @@ function UserProfile({ userId }) {
     <div className={cx("content")}>
       <div className={cx("user-container")}>
         <img src={avatarBaseUrl + avatar}></img>
-        <div className={cx("username")}>{name}</div>
+        <div className={cx("details")}>
+          <div className={cx("username")}>{name}</div>
+          {userId === cookies.id && <div className={cx("action")}>
+            <FontAwesomeIcon icon={faEdit} />
+            Edit
+          </div>}
+        </div>
       </div>
     </div>
   </div>

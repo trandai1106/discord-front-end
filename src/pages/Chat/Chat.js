@@ -28,7 +28,7 @@ function Chat() {
   const handleChange = () => {
     state.current = store.getState();
     setShowUserMenu(state.current.context.showUserMenu);
-    setShowUserProfile(state.current.context.showUserProfile);
+    setShowUserProfile(state.current.context.showUserProfile.state);
   }
   store.subscribe(handleChange);
 
@@ -52,7 +52,7 @@ function Chat() {
             <Welcome />
           }
         </div>
-        {showUserProfile && <UserProfile userId={cookies.id} />}
+        {showUserProfile && <UserProfile />}
       </div>
     </div>
   );
