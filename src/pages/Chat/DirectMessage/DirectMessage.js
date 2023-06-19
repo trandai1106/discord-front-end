@@ -42,7 +42,7 @@ function DirectMessage({ directMessageId }) {
       const msg = {
         from_id: data.from_id,
         content: data.content,
-        time: new Date(),
+        created_at: new Date(),
         directMessageId: directMessageId,
       };
 
@@ -83,7 +83,7 @@ function DirectMessage({ directMessageId }) {
             from_id: historyMessages[i].from_id,
             directMessageId: historyMessages[i].directMessageId,
             content: historyMessages[i].message,
-            time: historyMessages[i].created_at,
+            created_at: historyMessages[i].created_at,
           };
           setMessages((oldMsgs) => [...oldMsgs, msg]);
 
@@ -115,7 +115,7 @@ function DirectMessage({ directMessageId }) {
         to_id: directMessageId,
         content: input,
         access_token: cookies.access_token,
-        time: Date.now(),
+        created_at: Date.now(),
       };
       socketRef.current.emit('c_directMessage', msg);
       setInput('');
@@ -145,7 +145,7 @@ function DirectMessage({ directMessageId }) {
                         <Message
                           userId={m.from_id}
                           message={m.content}
-                          timestamp={m.time.toLocaleString()}
+                          timestamp={m.created_at}
                           username={sendersInfo.current[m.from_id].username}
                           avatar={sendersInfo.current[m.from_id].avatar}
                           key={index}

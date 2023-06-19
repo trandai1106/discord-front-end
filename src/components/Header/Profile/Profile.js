@@ -1,20 +1,20 @@
-import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
-import styles from "./Profile.module.scss";
-import * as Actions from "../../../store/actions/index";
-import store from "../../../store/store";
-import userAPI from "../../../api/userAPI";
-import authAPI from "../../../api/authAPI";
+import styles from './Profile.module.scss';
+import * as Actions from '../../../store/actions/index';
+import store from '../../../store/store';
+import userAPI from '../../../api/userAPI';
+import authAPI from '../../../api/authAPI';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
   const [cookies] = useCookies();
-  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
-  const [avatar, setAvatar] = useState("");
+  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+  const [avatar, setAvatar] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ function Profile() {
       const res = await userAPI.getUserInfo(cookies.id);
       if (res.status === 0) {
         authAPI.logout();
-        navigate("login");
+        navigate('login');
       }
       setAvatar(res.data.user.avatar);
     };
@@ -34,14 +34,11 @@ function Profile() {
     store.dispatch(Actions.toogleUserMenu(!showUserMenu));
   };
 
-  return <div className={cx('wrapper')}>
-    <img
-      className={cx('user-profile')}
-      src={avatarBaseUrl + avatar}
-      alt=""
-      onClick={handleToogleUserMenu}
-    />
-  </ div >
+  return (
+    <div className={cx('wrapper')}>
+      <img className={cx('user-profile')} src={avatarBaseUrl + avatar} alt="" onClick={handleToogleUserMenu} />
+    </div>
+  );
 }
 
 export default Profile;

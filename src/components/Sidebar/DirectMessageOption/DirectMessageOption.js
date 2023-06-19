@@ -1,15 +1,15 @@
-import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import styles from "./DirectMessageOption.module.scss";
-import userAPI from "../../../api/userAPI";
+import styles from './DirectMessageOption.module.scss';
+import userAPI from '../../../api/userAPI';
 
 const cx = classNames.bind(styles);
 
 function DirectMessageOption({ userId }) {
   const [user, setUser] = useState({});
-  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
+  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
   useEffect(() => {
     //Funciton to get user information by id
@@ -28,11 +28,9 @@ function DirectMessageOption({ userId }) {
   // };
 
   return (
-    <Link
-      className={cx("wrapper")}
-      to={`?direct-message=${user.id}`}>
-      <img className={cx("user-profile")} src={avatarBaseUrl + user.avatar} alt="" />
-      <span className={cx("title")}>{user.name}</span>
+    <Link className={cx('wrapper')} to={`?direct-message=${user.id}`}>
+      <img className={cx('user-profile')} src={avatarBaseUrl + user.avatar} alt="" />
+      <span className={cx('title')}>{user.name}</span>
     </Link>
   );
 }
