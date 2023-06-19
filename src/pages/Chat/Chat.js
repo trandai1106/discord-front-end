@@ -1,17 +1,17 @@
 /* eslint-disable no-unused-expressions */
-import classNames from "classnames/bind";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import classNames from 'classnames/bind';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import styles from "./Chat.module.scss";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import Header from "../../components/Header/Header";
-import DirectMessage from "./DirectMessage/DirectMessage";
-import People from "./People/People";
-import store from "../../store/store";
-import UserMenu from "../../components/UserMenu/UserMenu";
-import UserProfile from "../../components/UserProfile/UserProfile";
-import { useCookies } from "react-cookie";
+import styles from './Chat.module.scss';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import Header from '../../components/Header/Header';
+import DirectMessage from './DirectMessage/DirectMessage';
+import People from './People/People';
+import store from '../../store/store';
+import UserMenu from '../../components/UserMenu/UserMenu';
+import UserProfile from '../../components/UserProfile/UserProfile';
+import { useCookies } from 'react-cookie';
 
 const cx = classNames.bind(styles);
 
@@ -28,12 +28,12 @@ function Chat() {
     state.current = store.getState();
     setShowUserMenu(state.current.context.showUserMenu);
     setShowUserProfile(state.current.context.showUserProfile.state);
-  }
+  };
   store.subscribe(handleChange);
 
   useEffect(() => {
     if (!state.current.auth.isLoggedIn) {
-      navigate("/login");
+      navigate('/login');
     }
   }, [state.current.auth.isLoggedIn]);
 
@@ -44,12 +44,8 @@ function Chat() {
       <div className={cx('container')}>
         <Sidebar />
         <div className={cx('content')}>
-          {directMessageId && !channelId && <DirectMessage
-            directMessageId={directMessageId}
-          />}
-          {!directMessageId && !channelId &&
-            <People />
-          }
+          {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
+          {!directMessageId && !channelId && <People />}
         </div>
         {showUserProfile && <UserProfile />}
       </div>
