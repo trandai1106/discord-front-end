@@ -1,5 +1,6 @@
 .wrapper {
   padding: 20px;
+  height: 100%;
 }
 
 .heading {
@@ -9,7 +10,10 @@
 .content {
   display: flex;
   flex-direction: row;
+  justify-content: start;
   flex-wrap: wrap;
+  height: 100%;
+  overflow: auto;
 
   .content-item {
     padding: 20px;
