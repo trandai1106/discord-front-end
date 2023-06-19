@@ -6,7 +6,7 @@ import { store } from './../index'
 const chatAPI = {
     getMessages: async (to_id) => {
         try {
-            const url = '/chat/direct-message/' + to_id;
+            const url = '/chat/direct-message/contacts/' + to_id;
             const response = await axiosClient.get(url);
             return response.data;
         } catch (err) {
@@ -17,6 +17,10 @@ const chatAPI = {
         try {
             const url = `/chat/direct-message/contacts/${userId}`;
             const res = await axiosClient.get(url);
+            const url1 = `/chat/direct-message/contacted`;
+            const res1 = await axiosClient.get(url1);
+            console.log(res1);
+
             return res.data;
         } catch (err) {
             console.log("Error", err);

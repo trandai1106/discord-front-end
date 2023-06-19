@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import styles from "./DirectMessageOption.module.scss";
 import userAPI from "../../../api/userAPI";
@@ -9,13 +9,13 @@ const cx = classNames.bind(styles);
 
 function DirectMessageOption({ userId }) {
   const [user, setUser] = useState({});
-  const navigate = useNavigate();
   const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
 
   useEffect(() => {
     //Funciton to get user information by id
     (async () => {
       const res = await userAPI.getUserInfo(userId);
+      console.log(res);
       setUser(res.data.user);
     })();
   }, []);
