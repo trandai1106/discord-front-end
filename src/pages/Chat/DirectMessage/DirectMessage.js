@@ -1,23 +1,23 @@
 /* eslint-disable no-unused-expressions */
-import classNames from "classnames/bind";
-import { useEffect, useState, useRef } from "react";
-import socketIOClient from "socket.io-client";
-import { useCookies } from "react-cookie";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import classNames from 'classnames/bind';
+import { useEffect, useState, useRef } from 'react';
+import socketIOClient from 'socket.io-client';
+import { useCookies } from 'react-cookie';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ScrollableFeed from 'react-scrollable-feed';
-import { useNavigate } from "react-router-dom";
-import { Spin } from "antd";
+import { useNavigate } from 'react-router-dom';
+import { Spin } from 'antd';
 
-import styles from "./DirectMessage.module.scss";
-import Message from "../../../components/Message/Message";
+import styles from './DirectMessage.module.scss';
+import Message from '../../../components/Message/Message';
 import chatAPI from '../../../api/chatAPI';
 import userAPI from '../../../api/userAPI';
-import authAPI from "../../../api/authAPI";
+import authAPI from '../../../api/authAPI';
 
 const cx = classNames.bind(styles);
-const host = "http://localhost:8080";
-const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
+const host = 'http://localhost:8080';
+const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
 function DirectMessage({ directMessageId }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,24 +27,33 @@ function DirectMessage({ directMessageId }) {
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const sendersInfo = useRef({ length: 0 });
+  // const [sendersInfo, setSendersInfo] = useState([]);
   const socketRef = useRef();
   const messagesEnd = useRef();
 
   useEffect(() => {
     setMessages([]);
     getMessageHistory();
-    socketRef.current = socketIOClient.connect(host);
 
+    socketRef.current = socketIOClient.connect(host);
     socketRef.current.emit('c_pairID', { id: cookies.id, access_token: cookies.access_token });
 
-    socketRef.current.on('s_directMessage', data => {
-      console.log('Someone says: ' + data.content);
+    socketRef.current.on('s_directMessage', (data) => {
+      const msg = {
+        from_id: data.from_id,
+        content: data.content,
+        time: new Date(),
+        directMessageId: directMessageId,
+      };
 
-      if (data.from_id == directMessageId) {
-        setMessages(oldMsgs => [...oldMsgs, data]);
-      }
-      if (data.from_id == cookies.id) {
-        setMessages(oldMsgs => [...oldMsgs, data]);
+      console.log('Someone says: ', msg);
+
+      if (data.from_id == directMessageId || data.from_id == cookies.id) {
+        if (sendersInfo.current.length === 0) {
+          getMessageHistory();
+        } else {
+          setMessages((oldMsgs) => [...oldMsgs, msg]);
+        }
       }
     });
 
@@ -54,10 +63,11 @@ function DirectMessage({ directMessageId }) {
   }, [directMessageId]);
 
   const getMessageHistory = async () => {
+    setIsLoading(true);
     const res = await userAPI.getUserInfo(directMessageId);
     if (res.status === 0) {
       authAPI.logout();
-      navigate("login");
+      navigate('login');
     }
     if (res) {
       setPartner(res.data.user);
@@ -73,14 +83,15 @@ function DirectMessage({ directMessageId }) {
             from_id: historyMessages[i].from_id,
             directMessageId: historyMessages[i].directMessageId,
             content: historyMessages[i].message,
-            time: historyMessages[i].created_at
+            time: historyMessages[i].created_at,
           };
-          setMessages(oldMsgs => [...oldMsgs, msg]);
+          setMessages((oldMsgs) => [...oldMsgs, msg]);
 
           if (sendersInfo.current[msg.from_id] === undefined) {
             const newSender = await getUserInfo(msg.from_id);
             sendersInfo.current.length++;
             sendersInfo.current[msg.from_id] = newSender;
+            console.log(sendersInfo.current);
           }
         }
       }
@@ -92,7 +103,7 @@ function DirectMessage({ directMessageId }) {
     const res = await userAPI.getUserInfo(id);
     return {
       username: res.data.user.name,
-      avatar: avatarBaseUrl + res.data.user.avatar
+      avatar: avatarBaseUrl + res.data.user.avatar,
     };
   };
 
@@ -104,7 +115,7 @@ function DirectMessage({ directMessageId }) {
         to_id: directMessageId,
         content: input,
         access_token: cookies.access_token,
-        time: Date.now()
+        time: Date.now(),
       };
       socketRef.current.emit('c_directMessage', msg);
       setInput('');
@@ -117,35 +128,34 @@ function DirectMessage({ directMessageId }) {
         <div className={cx('channel-name')}>
           <p>{partner ? partner.name : ''}</p>
         </div>
-        <ScrollableFeed
-          className={cx('messages')}
-          ref={messagesEnd}
-        >
-          {isLoading ?
-            <div className={cx("loading")}>
+        <ScrollableFeed className={cx('messages')} ref={messagesEnd}>
+          {isLoading ? (
+            <div className={cx('loading')}>
               <Spin size="large" />
             </div>
-            :
+          ) : (
             <>
               {messages.length === 0 ? (
-                <h3 className={cx("zero-message")}>Start chat with {partner.name}</h3>
+                <h3 className={cx('zero-message')}>Start chat with {partner.name}</h3>
               ) : (
                 <>
-                  {messages.map((m, index) =>
-                    sendersInfo.current[m.from_id] && (
-                      <Message
-                        userId={m.from_id}
-                        message={m.content}
-                        timestamp={m.time.toLocaleString()}
-                        username={sendersInfo.current[m.from_id].username}
-                        avatar={sendersInfo.current[m.from_id].avatar}
-                        key={index}
-                      />
-                    ))}
+                  {messages.map(
+                    (m, index) =>
+                      sendersInfo.current[m.from_id] && (
+                        <Message
+                          userId={m.from_id}
+                          message={m.content}
+                          timestamp={m.time.toLocaleString()}
+                          username={sendersInfo.current[m.from_id].username}
+                          avatar={sendersInfo.current[m.from_id].avatar}
+                          key={index}
+                        />
+                      ),
+                  )}
                 </>
               )}
             </>
-          }
+          )}
         </ScrollableFeed>
         <form onSubmit={sendMessage}>
           <div className={cx('input-container')}>
@@ -155,12 +165,7 @@ function DirectMessage({ directMessageId }) {
               onChange={(e) => setInput(e.target.value)}
               placeholder={`Send a message to ${partner ? partner.name : ''}`}
             />
-            <FontAwesomeIcon
-              className={cx('icon')}
-              type="submit"
-              icon={faPaperPlane}
-              onClick={sendMessage}
-            />
+            <FontAwesomeIcon className={cx('icon')} type="submit" icon={faPaperPlane} onClick={sendMessage} />
           </div>
         </form>
       </div>
