@@ -9,6 +9,7 @@ import SidebarNav from './SidebarNav/SidebarNav';
 import ChannelOption from './ChannelOption/ChannelOption';
 import DirectMessageOption from './DirectMessageOption/DirectMessageOption';
 import chatAPI from '../../api/chatAPI';
+import chatRoomAPI from '../../api/chatRoomAPI';
 
 const cx = classNames.bind(styles);
 
@@ -18,22 +19,27 @@ function Sidebar() {
   const [width, setWidth] = useState(300);
   const [isResizing, setIsResizing] = useState(false);
   const [directMessages, setDirectMessages] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const [cookies] = useCookies();
   const navigate = useNavigate();
 
-  // Fake channels
-  const channels = [
-    {
-      name: 'Test channel',
-      id: '12345',
-    },
-  ];
+  // Fake rooms
+  // const rooms = [
+  //   {
+  //     name: 'Test channel',
+  //     id: '12345',
+  //   },
+  // ];
   // Fake direct message
   useEffect(() => {
     (async () => {
       const res = await chatAPI.getContacts();
-      console.log(res.data.contacted_data);
+      // console.log(res.data.contacted_data);
       setDirectMessages(res.data.contacted_data);
+
+      const roomRes = await chatRoomAPI.getAllRooms();
+      setRooms(roomRes.data.rooms);
+      console.log(roomRes.data.rooms);
     })();
   }, []);
 
@@ -94,8 +100,8 @@ function Sidebar() {
           }}
         />
         {showChannels &&
-          channels.map((element, index) => {
-            return <ChannelOption key={index} title={element.name} icon={faHashtag} id={element.id} />;
+          rooms.map((room, index) => {
+            return <ChannelOption key={index} title={room.name} icon={faHashtag} id={room._id} />;
           })}
         <div className={cx('spread')}></div>
         <SidebarNav

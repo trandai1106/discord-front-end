@@ -7,6 +7,7 @@ import styles from './Chat.module.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Header from '../../components/Header/Header';
 import DirectMessage from './DirectMessage/DirectMessage';
+import RoomMessage from './RoomMessage/RoomMessage';
 import People from './People/People';
 import store from '../../store/store';
 import UserMenu from '../../components/UserMenu/UserMenu';
@@ -45,6 +46,7 @@ function Chat() {
         <Sidebar />
         <div className={cx('content')}>
           {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
+          {!directMessageId && channelId && <RoomMessage roomMessageId={channelId} />}
           {!directMessageId && !channelId && <People />}
         </div>
         {showUserProfile && <UserProfile />}
