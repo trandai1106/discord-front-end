@@ -26,7 +26,6 @@ function RoomMessage({ roomMessageId }) {
   const [input, setInput] = useState('');
   const [room, setRoom] = useState();
   const [cookies] = useCookies();
-  const navigate = useNavigate();
   const sendersInfo = useRef({ length: 0 });
   // const [sendersInfo, setSendersInfo] = useState([]);
   const socketRef = useRef();
@@ -52,7 +51,9 @@ function RoomMessage({ roomMessageId }) {
 
         console.log('Someone says: ', msg);
 
-        setMessages((oldMsgs) => [...oldMsgs, msg]);
+        if (data.room_id === roomMessageId) {
+          setMessages((oldMsgs) => [...oldMsgs, msg]);
+        }
       }
     });
 
@@ -138,7 +139,7 @@ function RoomMessage({ roomMessageId }) {
           ) : (
             <>
               {messages.length === 0 ? (
-                <h3 className={cx('zero-message')}>{''}</h3>
+                <h3 className={cx('zero-message')}>Start chat with others in {room.name}</h3>
               ) : (
                 <>
                   {messages.map(

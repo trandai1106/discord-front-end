@@ -7,6 +7,7 @@ const userAPI = {
     try {
       const url = '/users/' + to_id;
       const res = await axiosClient.get(url);
+      console.log(res.data);
       return res.data;
     } catch (err) {
       console.log('Error', err);
