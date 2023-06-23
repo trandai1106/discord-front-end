@@ -34,3 +34,10 @@ export const toogleUserProfile = ({ state, userId }) => {
         payload: { state, userId }
     }
 }
+
+export const toogleAccountSettingsModal = (show) => {
+    return {
+        type: Types.TOGGLE_ACCOUNT_SETTINGS_MODAL,
+        payload: show
+    }
+}

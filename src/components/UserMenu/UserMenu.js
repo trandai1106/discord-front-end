@@ -21,6 +21,11 @@ function UserMenu() {
     store.dispatch(Actions.toogleUserMenu(false));
   };
 
+  const handleShowAccountSettings = () => {
+    store.dispatch(Actions.toogleAccountSettingsModal(true));
+    store.dispatch(Actions.toogleUserMenu(false));
+  };
+
   const handleLogout = () => {
     authAPI.logout();
     navigate('/login');
@@ -28,7 +33,8 @@ function UserMenu() {
 
   return <div className={cx('wrapper')}>
     <div className={cx('inner')}>
-      <div className={cx('item')} onClick={handleToogleUserProfile}>Profile Setting</div>
+      <div className={cx('item')} onClick={handleToogleUserProfile}>Profile</div>
+      <div className={cx('item')} onClick={handleShowAccountSettings}>Account Settings</div>
       <div className={cx('item')} onClick={handleLogout}>Log out</div>
     </div>
   </div>

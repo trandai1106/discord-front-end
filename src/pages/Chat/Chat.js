@@ -12,7 +12,7 @@ import People from './People/People';
 import store from '../../store/store';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import UserProfile from '../../components/UserProfile/UserProfile';
-import { useCookies } from 'react-cookie';
+import AccountSettingsModal from '../../components/AccountSettingsModal/AccountSettingsModal';
 
 const cx = classNames.bind(styles);
 
@@ -24,11 +24,13 @@ function Chat() {
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [showAccountSettingsModal, setShowAccountSettingsModal] = useState(false);
 
   const handleChange = () => {
     state.current = store.getState();
     setShowUserMenu(state.current.context.showUserMenu);
     setShowUserProfile(state.current.context.showUserProfile.state);
+    setShowAccountSettingsModal(state.current.context.showAccountSettingsModal);
   };
   store.subscribe(handleChange);
 
@@ -39,19 +41,23 @@ function Chat() {
   }, [state.current.auth.isLoggedIn]);
 
   return (
-    <div className={cx('wrapper')}>
-      {showUserMenu && <UserMenu />}
-      <Header />
-      <div className={cx('container')}>
-        <Sidebar />
-        <div className={cx('content')}>
-          {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
-          {!directMessageId && channelId && <RoomMessage roomMessageId={channelId} />}
-          {!directMessageId && !channelId && <People />}
+    <>
+      <div className={cx('wrapper')}>
+        {showAccountSettingsModal && <AccountSettingsModal />}
+        {showUserMenu && <UserMenu />}
+        <Header />
+        <div className={cx('container')}>
+          <Sidebar />
+          <div className={cx('content')}>
+            {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
+            {!directMessageId && channelId && <RoomMessage roomMessageId={channelId} />}
+            {!directMessageId && !channelId && <People />}
+          </div>
+          {showUserProfile && <UserProfile />}
         </div>
-        {showUserProfile && <UserProfile />}
       </div>
-    </div>
+    </>
+
   );
 }
 

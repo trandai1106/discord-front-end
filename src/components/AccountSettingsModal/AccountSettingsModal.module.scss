@@ -1,0 +1,113 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.7);
+  z-index: 10;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 500px;
+  height: 600px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 0 40px;
+  position: relative;
+}
+
+.header {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24px;
+
+  .close-icon {
+    cursor: pointer;
+  }
+}
+
+.avatar {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 200px;
+    width: 200px;
+    border-radius: 10px;
+  }
+
+  .upload {
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 6px 30px;
+    border-radius: 4px;
+    position: relative;
+
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+}
+
+.action-item {
+  .title {
+    font-size: 20px;
+  }
+
+  input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding-left: 20px;
+  }
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-top: 1px solid #ccc;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
+  padding-right: 20px;
+  gap: 20px;
+
+  .btn {
+    border: 1px solid #ccc;
+    padding: 6px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .btn.primary {
+    background-color: rgb(31, 118, 0);
+    color: #fff;
+  }
+}

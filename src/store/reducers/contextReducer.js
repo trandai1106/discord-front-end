@@ -7,6 +7,7 @@ export const initialState = {
     state: false,
     userId: "",
   },
+  showAccountSettingsModal: false,
 };
 
 const context = (state = initialState, action) => {
@@ -26,6 +27,11 @@ const context = (state = initialState, action) => {
       return {
         ...state,
         showUserProfile: action.payload
+      };
+    case Types.TOGGLE_ACCOUNT_SETTINGS_MODAL:
+      return {
+        ...state,
+        showAccountSettingsModal: action.payload
       };
     default: return state;
   }

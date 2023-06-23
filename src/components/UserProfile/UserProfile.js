@@ -13,6 +13,7 @@ import userAPI from '../../api/userAPI';
 import authAPI from '../../api/authAPI';
 
 const cx = classNames.bind(styles);
+const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
 
 function UserProfile() {
   const [width, setWidth] = useState(400);
@@ -20,7 +21,6 @@ function UserProfile() {
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');
   const [cookies] = useCookies();
-  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
   const [userId, setUserId] = useState(() => {
     return store.getState().context.showUserProfile.userId;
   });
@@ -32,6 +32,12 @@ function UserProfile() {
         state: false,
         userId: '',
       }),
+    );
+  };
+
+  const handleUserEdit = () => {
+    store.dispatch(
+      Actions.toogleAccountSettingsModal(true)
     );
   };
 
@@ -105,7 +111,7 @@ function UserProfile() {
           <div className={cx('details')}>
             <div className={cx('username')}>{name}</div>
             {userId === cookies.id ? (
-              <div className={cx('edit')}>
+              <div className={cx('edit')} onClick={handleUserEdit}>
                 <FontAwesomeIcon icon={faEdit} />
                 Edit
               </div>
