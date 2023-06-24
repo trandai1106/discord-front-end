@@ -37,8 +37,6 @@ function DirectMessage({ directMessageId }) {
     setMessages([]);
     getMessageHistory();
 
-    console.log(directMessageId);
-
     socket.on("s_directMessage", (data) => {
       const msg = {
         from_id: data.from_id,
@@ -46,8 +44,6 @@ function DirectMessage({ directMessageId }) {
         created_at: new Date(),
         directMessageId: directMessageId,
       };
-
-      console.log("Someone says: ", msg);
 
       if (data.from_id === directMessageId || data.from_id === cookies.id) {
         if (sendersInfo.current.length === 0) {
@@ -130,7 +126,7 @@ function DirectMessage({ directMessageId }) {
     }
   };
 
-  const handleVideoCall = () => {
+  const makeVideoCall = () => {
     const callId = uuid4().toString();
     socket.emit("directCall", {
       call_id: callId,
@@ -150,10 +146,8 @@ function DirectMessage({ directMessageId }) {
     socket.emit("c_directMessage", msg);
 
     socket.on("rejectedCall", (data) => {
-      console.log("rejectedCall");
       callWindow.close();
     });
-
   };
 
   return (
@@ -164,7 +158,7 @@ function DirectMessage({ directMessageId }) {
             {partner ? partner.name : ""}
             {status.current ? " - " + status.current : ""}
           </div>
-          <div className={cx("call-icon")} onClick={handleVideoCall}>
+          <div className={cx("call-icon")} onClick={makeVideoCall}>
             <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
           </div>
         </div>

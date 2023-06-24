@@ -3,20 +3,23 @@ import classNames from 'classnames/bind';
 import { useEffect, useState, useRef } from 'react';
 import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPhone } from '@fortawesome/free-solid-svg-icons';
 import ScrollableFeed from 'react-scrollable-feed';
 import { Spin } from 'antd';
+import uuid4 from "uuid4";
 
 import styles from './RoomMessage.module.scss';
 import Message from '../../../components/Message/Message';
 import userAPI from '../../../api/userAPI';
 import chatRoomAPI from '../../../api/chatRoomAPI';
 import socket from '../../../socket';
+import store from '../../../store/store';
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function RoomMessage({ roomMessageId }) {
+  const myUser = store.getState().auth.user;
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -30,8 +33,6 @@ function RoomMessage({ roomMessageId }) {
     getMessageHistory();
 
     socket.on('s_roomMessage', (data) => {
-      console.log(roomMessageId);
-      console.log(data);
       if (roomMessageId === data.room_id) {
         const msg = {
           from_id: data.from_id,
@@ -39,8 +40,6 @@ function RoomMessage({ roomMessageId }) {
           created_at: data.created_at,
           room_id: data.room_id,
         };
-
-        console.log('Someone says: ', msg);
 
         if (data.room_id === roomMessageId) {
           setMessages((oldMsgs) => [...oldMsgs, msg]);
@@ -66,7 +65,6 @@ function RoomMessage({ roomMessageId }) {
     if (historyChat) {
       if (historyChat.data) {
         const historyMessages = historyChat.data.messages;
-        console.log(historyMessages);
         for (let i = 0; i < historyMessages.length; i++) {
           const msg = {
             from_id: historyMessages[i].from_id,
@@ -80,7 +78,6 @@ function RoomMessage({ roomMessageId }) {
             const newSender = await getUserInfo(msg.from_id);
             sendersInfo.current.length++;
             sendersInfo.current[msg.from_id] = newSender;
-            console.log(sendersInfo.current);
           }
         }
       }
@@ -111,11 +108,36 @@ function RoomMessage({ roomMessageId }) {
     }
   };
 
+  const makeVideoCall = () => {
+    const callId = uuid4().toString();
+    socket.emit("roomCall", {
+      call_id: callId,
+      from_id: myUser.id,
+      room_id: roomMessageId,
+      from_name: room.name,
+    });
+    const callWindow = window.open(baseUrl + "/call/" + callId, '_blank', '_self');
+
+    const msg = {
+      from_id: myUser.id,
+      room_id: roomMessageId,
+      content: "Let make a new call",
+      access_token: cookies.access_token,
+      created_at: Date.now(),
+    };
+    socket.emit("c_roomMessage", msg);
+  };
+
   return (
     <div className={cx('wrapper')}>
       <div className={cx('main')}>
-        <div className={cx('channel-name')}>
-          <p>{room ? room.name : ''}</p>
+        <div className={cx("channel-header")}>
+          <div className={cx("channel-name")}>
+            {room ? room.name : ""}
+          </div>
+          <div className={cx("call-icon")} onClick={makeVideoCall}>
+            <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
+          </div>
         </div>
         <ScrollableFeed className={cx('messages')} ref={messagesEnd}>
           {isLoading ? (

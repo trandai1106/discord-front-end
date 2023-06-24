@@ -34,15 +34,17 @@
   color: var(--black);
 }
 
-.channel-name {
+.channel-header {
   width: 100%;
   height: var(--header-height);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   position: relative;
+  padding: 0 20px;
 
-  p {
-    margin-left: 20px;
+  .call-icon {
+    cursor: pointer;
   }
 
   &::after {

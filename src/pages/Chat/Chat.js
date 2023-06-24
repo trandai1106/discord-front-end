@@ -24,6 +24,7 @@ function Chat() {
   const [searchParams] = useSearchParams();
   const directMessageId = searchParams.get('direct-message');
   const channelId = searchParams.get('channel');
+  const myUser = store.getState().auth.user;
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -34,6 +35,14 @@ function Chat() {
       const isJoin = window.confirm(`You have a call from ${data.from_name}, click ok to join!`);
       if (isJoin) {
         window.open(baseUrl + "/call/" + data.call_id, '_blank', '_self');
+        const msg = {
+          from_id: cookies.id,
+          to_id: data.from_id,
+          content: "Joined call",
+          access_token: cookies.access_token,
+          created_at: Date.now(),
+        };
+        socket.emit("c_directMessage", msg);
       } else {
         socket.emit("rejectCall", { from_id: cookies.id, to_id: data.from_id, call_id: data.call_id });
         const msg = {
@@ -44,6 +53,33 @@ function Chat() {
           created_at: Date.now(),
         };
         socket.emit("c_directMessage", msg);
+      }
+    });
+
+    socket.on("roomCall", (data) => {
+      if (data.from_id !== myUser.id) {
+        const isJoin = window.confirm(`You have a call from ${data.from_name}, click ok to join!`);
+        if (isJoin) {
+          window.open(baseUrl + "/call/" + data.call_id, '_blank', '_self');
+          const msg = {
+            from_id: cookies.id,
+            room_id: data.room_id,
+            content: "Joined call",
+            access_token: cookies.access_token,
+            created_at: Date.now(),
+          };
+          socket.emit("c_roomMessage", msg);
+        } else {
+          socket.emit("rejectCall", { from_id: cookies.id, room_id: data.room_id, call_id: data.call_id });
+          const msg = {
+            from_id: cookies.id,
+            room_id: data.room_id,
+            content: "Sory, I'm busy",
+            access_token: cookies.access_token,
+            created_at: Date.now(),
+          };
+          socket.emit("c_roomMessage", msg);
+        }
       }
     });
   }, []);
