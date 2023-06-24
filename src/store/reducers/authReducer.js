@@ -13,6 +13,8 @@ const auth = (state = initialState, action) => {
                 isLoggedIn: true,
                 user: action.payload
             }
+            console.log("User saved");
+            console.log(saveState);
             return saveState;
         case Types.REMOVE_USER_OUT_OF_REDUX:
             const removeState = {

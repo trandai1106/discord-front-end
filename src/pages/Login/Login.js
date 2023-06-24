@@ -31,6 +31,7 @@ function Login() {
 
     if (res.status === 1) {
       navigate("/chat");
+      window.location.reload();
     } else {
       alert(res.message);
     }

@@ -12,7 +12,7 @@ const authAPI = {
                 const id = res.data.data.id;
                 document.cookie = `access_token=${token}; path=/`;
                 document.cookie = `id=${id}; path=/`;
-                store.dispatch(Actions.saveUserToRedux({ id, token }));
+                // store.dispatch(Actions.saveUserToRedux(res.data.user));
             }
             return res.data;
         } catch (err) {
@@ -29,7 +29,7 @@ const authAPI = {
                 const id = res.data.data.id;
                 document.cookie = `access_token=${token}; path=/`;
                 document.cookie = `id=${id}; path=/`;
-                store.dispatch(Actions.saveUserToRedux({ id, token }));
+                // store.dispatch(Actions.saveUserToRedux(res.data.user));
             }
             return res.data;
         } catch (err) {
@@ -42,7 +42,7 @@ const authAPI = {
             const url = '/auth/logout';
             document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             document.cookie = 'id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            store.dispatch(Actions.removeUserOutOfRedux(null))
+            // store.dispatch(Actions.removeUserOutOfRedux(null))
             const res = await axiosClient.post(url);
             return res.data;
         } catch (err) {

@@ -14,6 +14,8 @@ function NotFound() {
   useEffect(() => {
     if (!state.auth.isLoggedIn) {
       navigate("/login");
+    } else {
+      navigate("/chat");
     }
   }, [state]);
 

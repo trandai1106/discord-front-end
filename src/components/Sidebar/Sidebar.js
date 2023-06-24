@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import { faSortDown, faSortUp, faHashtag, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
 import styles from './Sidebar.module.scss';
@@ -10,6 +9,7 @@ import ChannelOption from './ChannelOption/ChannelOption';
 import DirectMessageOption from './DirectMessageOption/DirectMessageOption';
 import chatAPI from '../../api/chatAPI';
 import chatRoomAPI from '../../api/chatRoomAPI';
+import socket from '../../socket';
 
 const cx = classNames.bind(styles);
 
@@ -20,27 +20,24 @@ function Sidebar() {
   const [isResizing, setIsResizing] = useState(false);
   const [directMessages, setDirectMessages] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [cookies] = useCookies();
   const navigate = useNavigate();
 
-  // Fake rooms
-  // const rooms = [
-  //   {
-  //     name: 'Test channel',
-  //     id: '12345',
-  //   },
-  // ];
-  // Fake direct message
   useEffect(() => {
-    (async () => {
+    const getSizebarOptions = async () => {
       const res = await chatAPI.getContacts();
-      // console.log(res.data.contacted_data);
       setDirectMessages(res.data.contacted_data);
-
       const roomRes = await chatRoomAPI.getAllRooms();
       setRooms(roomRes.data.rooms);
-      console.log(roomRes.data.rooms);
-    })();
+    };
+    getSizebarOptions();
+
+    socket.on("s_directMessage", () => {
+      getSizebarOptions();
+    });
+
+    socket.on("s_roomMessage", () => {
+      getSizebarOptions();
+    })
   }, []);
 
   // Setups for adjusting sidebar width
@@ -111,7 +108,6 @@ function Sidebar() {
         />
         {showDirectMessages &&
           directMessages.map((user, index) => {
-            console.log(user);
             return <DirectMessageOption key={index} userId={user.user_id} />;
           })}
       </div>

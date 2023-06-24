@@ -15,15 +15,19 @@ import chatAPI from "../../../api/chatAPI";
 import userAPI from "../../../api/userAPI";
 import authAPI from "../../../api/authAPI";
 import socket from "../../../socket";
+import store from "../../../store/store";
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function DirectMessage({ directMessageId }) {
+  const myUser = store.getState().auth.user;
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [partner, setPartner] = useState();
+  // const [status, setStatus] = useState("");
+  const status = useRef("");
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const sendersInfo = useRef({ length: 0 });
@@ -32,6 +36,8 @@ function DirectMessage({ directMessageId }) {
   useEffect(() => {
     setMessages([]);
     getMessageHistory();
+
+    console.log(directMessageId);
 
     socket.on("s_directMessage", (data) => {
       const msg = {
@@ -52,10 +58,18 @@ function DirectMessage({ directMessageId }) {
       }
     });
 
+    socket.on("updateUserOnlineList", (data) => {
+      console.log(data);
+      if (data.includes(directMessageId)) {
+        status.current = "online";
+      } else {
+        status.current = "offline";
+      }
+    });
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, [directMessageId]);
 
   const getMessageHistory = async () => {
@@ -73,7 +87,6 @@ function DirectMessage({ directMessageId }) {
     if (historyChat) {
       if (historyChat.data) {
         const historyMessages = historyChat.data.messages;
-        console.log(historyMessages);
         for (let i = 0; i < historyMessages.length; i++) {
           const msg = {
             from_id: historyMessages[i].from_id,
@@ -87,7 +100,6 @@ function DirectMessage({ directMessageId }) {
             const newSender = await getUserInfo(msg.from_id);
             sendersInfo.current.length++;
             sendersInfo.current[msg.from_id] = newSender;
-            console.log(sendersInfo.current);
           }
         }
       }
@@ -120,11 +132,16 @@ function DirectMessage({ directMessageId }) {
 
   const handleVideoCall = () => {
     const callId = uuid4().toString();
-    socket.emit("directCall", { call_id: callId, from_id: cookies.id, to_id: directMessageId, from_name: sendersInfo.current[cookies.id].username });
+    socket.emit("directCall", {
+      call_id: callId,
+      from_id: myUser.id,
+      to_id: directMessageId,
+      from_name: myUser.name,
+    });
     const callWindow = window.open(baseUrl + "/call/" + callId, '_blank', '_self');
 
     const msg = {
-      from_id: cookies.id,
+      from_id: myUser.id,
       to_id: directMessageId,
       content: "Let make a new call",
       access_token: cookies.access_token,
@@ -145,6 +162,7 @@ function DirectMessage({ directMessageId }) {
         <div className={cx("channel-header")}>
           <div className={cx("channel-name")}>
             {partner ? partner.name : ""}
+            {status.current ? " - " + status.current : ""}
           </div>
           <div className={cx("call-icon")} onClick={handleVideoCall}>
             <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>

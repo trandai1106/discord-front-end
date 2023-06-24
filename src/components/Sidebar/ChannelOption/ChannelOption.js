@@ -6,7 +6,7 @@ import styles from "./ChannelOption.module.scss";
 
 const cx = classNames.bind(styles);
 
-function ChannelOption({title, icon, id}) {
+function ChannelOption({ title, icon, id }) {
   return (
     <Link className={cx("wrapper")} to={`?channel=${id}`}>
       <div className={cx("icon")}>

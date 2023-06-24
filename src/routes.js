@@ -4,7 +4,7 @@ import Login from './pages/Login/Login';
 import Chat from './pages/Chat/Chat';
 import NotFound from './pages/NotFound/NotFound';
 
-const routes = [
+export const publicRoutes = [
   {
     path: '/register',
     element: <Register />,
@@ -14,13 +14,16 @@ const routes = [
     element: <Login />,
   },
   {
-    path: '/chat',
-    element: <Chat />,
-  },
-  {
     path: '*',
     element: <NotFound />,
   },
 ];
 
-export default routes;
+export const privateRoutes = [
+  {
+    path: '/chat',
+    element: <Chat />,
+  },
+];
+
+// export default routes;

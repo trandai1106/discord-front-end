@@ -15,7 +15,6 @@ function DirectMessageOption({ userId }) {
     //Funciton to get user information by id
     (async () => {
       const res = await userAPI.getUserInfo(userId);
-      console.log(res);
       setUser(res.data.user);
     })();
   }, []);

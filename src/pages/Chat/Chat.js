@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { useSearchParams } from "react-router-dom";
 
 import styles from './Chat.module.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -21,10 +21,9 @@ const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function Chat() {
   const [cookies] = useCookies();
-  const urlParams = new URLSearchParams(window.location.search);
-  const directMessageId = urlParams.get('direct-message');
-  const channelId = urlParams.get('channel');
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const directMessageId = searchParams.get('direct-message');
+  const channelId = searchParams.get('channel');
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -57,12 +56,6 @@ function Chat() {
   };
   store.subscribe(handleChange);
 
-  useEffect(() => {
-    if (!state.current.auth.isLoggedIn) {
-      navigate('/login');
-    }
-  }, [state.current.auth.isLoggedIn]);
-
   return (
     <>
       <div className={cx('wrapper')}>
@@ -72,7 +65,7 @@ function Chat() {
         <div className={cx('container')}>
           <Sidebar />
           <div className={cx('content')}>
-            {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} socketRef={socket} />}
+            {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
             {!directMessageId && channelId && <RoomMessage roomMessageId={channelId} />}
             {!directMessageId && !channelId && <People />}
           </div>

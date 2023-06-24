@@ -5,14 +5,11 @@ import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ScrollableFeed from 'react-scrollable-feed';
-import { useNavigate } from 'react-router-dom';
 import { Spin } from 'antd';
 
 import styles from './RoomMessage.module.scss';
 import Message from '../../../components/Message/Message';
-import chatAPI from '../../../api/chatAPI';
 import userAPI from '../../../api/userAPI';
-import authAPI from '../../../api/authAPI';
 import chatRoomAPI from '../../../api/chatRoomAPI';
 import socket from '../../../socket';
 
@@ -51,17 +48,12 @@ function RoomMessage({ roomMessageId }) {
       }
     });
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, [roomMessageId]);
 
   const getMessageHistory = async () => {
-    // if (res.status === 0) {
-    //   authAPI.logout();
-    //   navigate('login');
-    // }
-
     setIsLoading(true);
 
     const roomRes = await chatRoomAPI.getRoom(roomMessageId);
