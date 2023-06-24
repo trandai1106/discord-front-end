@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import classNames from 'classnames/bind';
 import { useEffect, useState, useRef } from 'react';
-import socketIOClient from 'socket.io-client';
 import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
@@ -15,10 +14,10 @@ import chatAPI from '../../../api/chatAPI';
 import userAPI from '../../../api/userAPI';
 import authAPI from '../../../api/authAPI';
 import chatRoomAPI from '../../../api/chatRoomAPI';
+import socket from '../../../socket';
 
 const cx = classNames.bind(styles);
-const host = 'http://localhost:8080';
-const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function RoomMessage({ roomMessageId }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,21 +26,16 @@ function RoomMessage({ roomMessageId }) {
   const [room, setRoom] = useState();
   const [cookies] = useCookies();
   const sendersInfo = useRef({ length: 0 });
-  // const [sendersInfo, setSendersInfo] = useState([]);
-  const socketRef = useRef();
   const messagesEnd = useRef();
 
   useEffect(() => {
     setMessages([]);
     getMessageHistory();
 
-    socketRef.current = socketIOClient.connect(host);
-    socketRef.current.emit('c_pairID', { id: cookies.id, access_token: cookies.access_token });
-
-    socketRef.current.on('s_roomMessage', (data) => {
+    socket.on('s_roomMessage', (data) => {
       console.log(roomMessageId);
       console.log(data);
-      if (roomMessageId == data.room_id) {
+      if (roomMessageId === data.room_id) {
         const msg = {
           from_id: data.from_id,
           content: data.content,
@@ -58,7 +52,7 @@ function RoomMessage({ roomMessageId }) {
     });
 
     return () => {
-      socketRef.current.disconnect();
+      socket.disconnect();
     };
   }, [roomMessageId]);
 
@@ -106,7 +100,7 @@ function RoomMessage({ roomMessageId }) {
     const res = await userAPI.getUserInfo(id);
     return {
       username: res.data.user.name,
-      avatar: avatarBaseUrl + res.data.user.avatar,
+      avatar: baseUrl + res.data.user.avatar,
     };
   };
 
@@ -120,7 +114,7 @@ function RoomMessage({ roomMessageId }) {
         access_token: cookies.access_token,
         created_at: Date.now(),
       };
-      socketRef.current.emit('c_roomMessage', msg);
+      socket.emit('c_roomMessage', msg);
       setInput('');
     }
   };

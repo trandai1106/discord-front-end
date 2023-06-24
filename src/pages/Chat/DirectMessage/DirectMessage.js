@@ -1,44 +1,39 @@
 /* eslint-disable no-unused-expressions */
-import classNames from 'classnames/bind';
-import { useEffect, useState, useRef } from 'react';
-import socketIOClient from 'socket.io-client';
-import { useCookies } from 'react-cookie';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import ScrollableFeed from 'react-scrollable-feed';
-import { useNavigate } from 'react-router-dom';
-import { Spin } from 'antd';
+import classNames from "classnames/bind";
+import { useEffect, useState, useRef } from "react";
+import { useCookies } from "react-cookie";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane, faPhone } from "@fortawesome/free-solid-svg-icons";
+import ScrollableFeed from "react-scrollable-feed";
+import { useNavigate } from "react-router-dom";
+import { Spin } from "antd";
+import uuid4 from "uuid4";
 
-import styles from './DirectMessage.module.scss';
-import Message from '../../../components/Message/Message';
-import chatAPI from '../../../api/chatAPI';
-import userAPI from '../../../api/userAPI';
-import authAPI from '../../../api/authAPI';
+import styles from "./DirectMessage.module.scss";
+import Message from "../../../components/Message/Message";
+import chatAPI from "../../../api/chatAPI";
+import userAPI from "../../../api/userAPI";
+import authAPI from "../../../api/authAPI";
+import socket from "../../../socket";
 
 const cx = classNames.bind(styles);
-const host = 'http://localhost:8080';
-const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function DirectMessage({ directMessageId }) {
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [partner, setPartner] = useState();
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const sendersInfo = useRef({ length: 0 });
-  // const [sendersInfo, setSendersInfo] = useState([]);
-  const socketRef = useRef();
   const messagesEnd = useRef();
 
   useEffect(() => {
     setMessages([]);
     getMessageHistory();
 
-    socketRef.current = socketIOClient.connect(host);
-    socketRef.current.emit('c_pairID', { id: cookies.id, access_token: cookies.access_token });
-
-    socketRef.current.on('s_directMessage', (data) => {
+    socket.on("s_directMessage", (data) => {
       const msg = {
         from_id: data.from_id,
         content: data.content,
@@ -46,9 +41,9 @@ function DirectMessage({ directMessageId }) {
         directMessageId: directMessageId,
       };
 
-      console.log('Someone says: ', msg);
+      console.log("Someone says: ", msg);
 
-      if (data.from_id == directMessageId || data.from_id == cookies.id) {
+      if (data.from_id === directMessageId || data.from_id === cookies.id) {
         if (sendersInfo.current.length === 0) {
           getMessageHistory();
         } else {
@@ -57,8 +52,9 @@ function DirectMessage({ directMessageId }) {
       }
     });
 
+
     return () => {
-      socketRef.current.disconnect();
+      socket.disconnect();
     };
   }, [directMessageId]);
 
@@ -67,7 +63,7 @@ function DirectMessage({ directMessageId }) {
     const res = await userAPI.getUserInfo(directMessageId);
     if (res.status === 0) {
       authAPI.logout();
-      navigate('login');
+      navigate("login");
     }
     if (res) {
       setPartner(res.data.user);
@@ -103,13 +99,13 @@ function DirectMessage({ directMessageId }) {
     const res = await userAPI.getUserInfo(id);
     return {
       username: res.data.user.name,
-      avatar: avatarBaseUrl + res.data.user.avatar,
+      avatar: baseUrl + res.data.user.avatar,
     };
   };
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (input !== null && input !== '') {
+    if (input !== null && input !== "") {
       const msg = {
         from_id: cookies.id,
         to_id: directMessageId,
@@ -117,26 +113,52 @@ function DirectMessage({ directMessageId }) {
         access_token: cookies.access_token,
         created_at: Date.now(),
       };
-      socketRef.current.emit('c_directMessage', msg);
-      setInput('');
+      socket.emit("c_directMessage", msg);
+      setInput("");
     }
   };
 
+  const handleVideoCall = () => {
+    const callId = uuid4().toString();
+    socket.emit("directCall", { call_id: callId, from_id: cookies.id, to_id: directMessageId, from_name: sendersInfo.current[cookies.id].username });
+    const callWindow = window.open(baseUrl + "/call/" + callId, '_blank', '_self');
+
+    const msg = {
+      from_id: cookies.id,
+      to_id: directMessageId,
+      content: "Let make a new call",
+      access_token: cookies.access_token,
+      created_at: Date.now(),
+    };
+    socket.emit("c_directMessage", msg);
+
+    socket.on("rejectedCall", (data) => {
+      console.log("rejectedCall");
+      callWindow.close();
+    });
+
+  };
+
   return (
-    <div className={cx('wrapper')}>
-      <div className={cx('main')}>
-        <div className={cx('channel-name')}>
-          <p>{partner ? partner.name : ''}</p>
+    <div className={cx("wrapper")}>
+      <div className={cx("main")}>
+        <div className={cx("channel-header")}>
+          <div className={cx("channel-name")}>
+            {partner ? partner.name : ""}
+          </div>
+          <div className={cx("call-icon")} onClick={handleVideoCall}>
+            <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
+          </div>
         </div>
-        <ScrollableFeed className={cx('messages')} ref={messagesEnd}>
+        <ScrollableFeed className={cx("messages")} ref={messagesEnd}>
           {isLoading ? (
-            <div className={cx('loading')}>
+            <div className={cx("loading")}>
               <Spin size="large" />
             </div>
           ) : (
             <>
               {messages.length === 0 ? (
-                <h3 className={cx('zero-message')}>Start chat with {partner.name}</h3>
+                <h3 className={cx("zero-message")}>Start chat with {partner.name}</h3>
               ) : (
                 <>
                   {messages.map(
@@ -158,14 +180,14 @@ function DirectMessage({ directMessageId }) {
           )}
         </ScrollableFeed>
         <form onSubmit={sendMessage}>
-          <div className={cx('input-container')}>
+          <div className={cx("input-container")}>
             <input
-              className={cx('input')}
+              className={cx("input")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Send a message to ${partner ? partner.name : ''}`}
+              placeholder={`Send a message to ${partner ? partner.name : ""}`}
             />
-            <FontAwesomeIcon className={cx('icon')} type="submit" icon={faPaperPlane} onClick={sendMessage} />
+            <FontAwesomeIcon className={cx("icon")} type="submit" icon={faPaperPlane} onClick={sendMessage} />
           </div>
         </form>
       </div>

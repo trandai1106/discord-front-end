@@ -13,10 +13,10 @@ import userAPI from '../../api/userAPI';
 import authAPI from '../../api/authAPI';
 
 const cx = classNames.bind(styles);
-const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
 function UserProfile() {
-  const [width, setWidth] = useState(400);
+  const [width, setWidth] = useState(360);
   const [isResizing, setIsResizing] = useState(false);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');

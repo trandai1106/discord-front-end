@@ -8,7 +8,7 @@ import routes from "./routes";
 import store from "./store/store";
 
 function App() {
-    const [cookies, setCookies] = useCookies();
+    const [cookies] = useCookies();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

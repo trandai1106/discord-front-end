@@ -8,7 +8,7 @@ import store from '../../../store/store';
 import * as Actions from '../../../store/actions/index';
 
 const cx = classNames.bind(styles);
-const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
 function People() {
   const [users, setUsers] = useState([]);

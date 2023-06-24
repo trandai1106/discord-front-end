@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 
 function Profile() {
   const [cookies] = useCookies();
-  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
   const [avatar, setAvatar] = useState('');
   const navigate = useNavigate();
 

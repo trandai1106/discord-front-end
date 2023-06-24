@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 
 function DirectMessageOption({ userId }) {
   const [user, setUser] = useState({});
-  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+  const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
   useEffect(() => {
     //Funciton to get user information by id

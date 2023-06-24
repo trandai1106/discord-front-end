@@ -13,11 +13,11 @@ import authAPI from '../../api/authAPI';
 import { useCookies } from 'react-cookie';
 
 const cx = classNames.bind(styles);
-const avatarBaseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
 function AccountSettingsModal() {
   const [name, setName] = useState("Test");
-  const [previewAvatar, setPreviewAvatar] = useState("http://localhost:8080/avatars/default_avatar_purple.jpg");
+  const [previewAvatar, setPreviewAvatar] = useState(avatarBaseUrl + "/avatars/default_avatar_purple.jpg");
   const [avatar, setAvatar] = useState(null);
   const [cookies] = useCookies();
   const navigate = useNavigate();
