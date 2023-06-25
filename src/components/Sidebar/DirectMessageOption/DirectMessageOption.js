@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSearchParams, useLocation } from "react-router-dom";
 
 import styles from './DirectMessageOption.module.scss';
 import userAPI from '../../../api/userAPI';
@@ -14,6 +15,9 @@ function DirectMessageOption({ userId }) {
   const [user, setUser] = useState({});
   const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
   const [isOnline, setIsOnline] = useState("");
+  const [notification, setNotification] = useState(false);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect(() => {
     //Funciton to get user information by id
@@ -31,7 +35,19 @@ function DirectMessageOption({ userId }) {
     });
 
     socket.emit("checkOnlineUserList", myUser.id);
-  }, []);
+    const currentId = searchParams.get('direct-message');
+    console.log(user.name, currentId);
+    if (userId === currentId) {
+      setNotification(false);
+    } else {
+      socket.on("s_directMessage", (data) => {
+        if (data.from_id === userId) {
+          console.log(data.from_id, userId, currentId);
+          setNotification(true);
+        }
+      });
+    }
+  }, [location]);
 
   return (
     <Link className={cx('wrapper')} to={`?direct-message=${user.id}`}>
@@ -39,8 +55,12 @@ function DirectMessageOption({ userId }) {
         <img className={cx('avatar')} src={avatarBaseUrl + user.avatar} alt="" />
         <div className={cx("status", isOnline ? "active" : "")}></div>
       </div>
-      <span className={cx('title')}>{user.name}
-      </span>
+      <div className={cx('title')}>
+        {user.name}
+      </div>
+      {notification && <div className={cx("notification")}>
+        {"!"}
+      </div>}
     </Link>
   );
 }

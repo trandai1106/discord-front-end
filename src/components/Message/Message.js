@@ -3,10 +3,13 @@ import classNames from "classnames/bind";
 import styles from "./Message.module.scss";
 import store from "../../store/store";
 import * as Actions from "../../store/actions/index";
+import chatAPI from "../../api/chatAPI";
 
 const cx = classNames.bind(styles);
 
-function Message({ message, timestamp, username, avatar, userId }) {
+function Message({ id, message, timestamp, username, avatar, userId, deleteMessage }) {
+  const myUser = store.getState().auth.user;
+
   const formattedDate = (timestamp) => {
     const messageDate = new Date(timestamp);
     const year = messageDate.getFullYear();
@@ -42,9 +45,12 @@ function Message({ message, timestamp, username, avatar, userId }) {
           <div className={cx("username")} onClick={handledShowUserProfile}>
             {username ? username : "..."}
           </div>
-          <span className={cx("message-timestamp")}>
+          <div className={cx("message-timestamp")}>
             {formattedDate(timestamp)}
-          </span>
+          </div>
+          {myUser.id === userId && <div className={cx("delete")} onClick={() => { deleteMessage(id) }}>
+            delete
+          </div>}
         </h4>
         <p>{message}</p>
       </div>

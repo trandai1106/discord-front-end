@@ -21,6 +21,15 @@ const chatAPI = {
       console.log('Error', err);
     }
   },
+  deleteMessage: async (id) => {
+    try {
+      const url = `/chat/direct-message/delete/${id}`;
+      const res = await axiosClient.delete(url);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
 };
 
 export default chatAPI;

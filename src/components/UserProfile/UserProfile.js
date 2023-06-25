@@ -11,6 +11,7 @@ import store from '../../store/store';
 import * as Actions from '../../store/actions/index';
 import userAPI from '../../api/userAPI';
 import authAPI from '../../api/authAPI';
+import socket from '../../socket';
 
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
@@ -19,12 +20,14 @@ function UserProfile() {
   const [width, setWidth] = useState(360);
   const [isResizing, setIsResizing] = useState(false);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [avatar, setAvatar] = useState('');
   const [cookies] = useCookies();
   const [userId, setUserId] = useState(() => {
     return store.getState().context.showUserProfile.userId;
   });
   const navigate = useNavigate();
+  const [isOnline, setIsOnline] = useState(false);
 
   const handleClose = () => {
     store.dispatch(
@@ -56,11 +59,20 @@ function UserProfile() {
       }
       setName(res.data.user.name);
       setAvatar(res.data.user.avatar);
-      console.log(res);
+      setEmail(res.data.user.email);
+      socket.emit("checkOnlineUserList", cookies.id);
     };
     if (userId !== '') {
       getUserInfo();
     }
+
+    socket.on("updateUserOnlineList", (data) => {
+      if (data.includes(userId)) {
+        setIsOnline(true);
+      } else {
+        setIsOnline(false);
+      }
+    });
   }, [userId]);
 
   // Setups for adjusting profile setting width
@@ -110,15 +122,18 @@ function UserProfile() {
           <img src={avatarBaseUrl + avatar}></img>
           <div className={cx('details')}>
             <div className={cx('username')}>{name}</div>
+            <div className={cx('email')}>{email}</div>
             {userId === cookies.id ? (
               <div className={cx('edit')} onClick={handleUserEdit}>
                 <FontAwesomeIcon icon={faEdit} />
                 Edit
               </div>
             ) : (
-              <Link to={`?direct-message=${userId}`} className={cx('chat')}>
-                Chat with {name}
-              </Link>
+              <>
+                <Link to={`?direct-message=${userId}`} className={cx('chat')}>
+                  Chat with {name} {isOnline ? " - online" : " - offline"}
+                </Link>
+              </>
             )}
           </div>
         </div>

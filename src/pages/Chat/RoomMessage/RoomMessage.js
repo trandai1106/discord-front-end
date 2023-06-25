@@ -14,6 +14,7 @@ import userAPI from '../../../api/userAPI';
 import chatRoomAPI from '../../../api/chatRoomAPI';
 import socket from '../../../socket';
 import store from '../../../store/store';
+import chatAPI from '../../../api/chatAPI';
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
@@ -34,9 +35,10 @@ function RoomMessage({ roomMessageId }) {
     getMessageHistory();
     setShowActions(false);
 
-    socket.on('s_roomMessage', (data) => {
+    const handleMessage = (data) => {
       if (roomMessageId === data.room_id) {
         const msg = {
+          id: data._id,
           from_id: data.from_id,
           content: data.content,
           created_at: data.created_at,
@@ -47,11 +49,13 @@ function RoomMessage({ roomMessageId }) {
           setMessages((oldMsgs) => [...oldMsgs, msg]);
         }
       }
-    });
+    }
 
-    // return () => {
-    //   socket.disconnect();
-    // };
+    socket.on('s_roomMessage', handleMessage);
+
+    return () => {
+      socket.off("s_directMessage", handleMessage);
+    };
   }, [roomMessageId]);
 
   const getMessageHistory = async () => {
@@ -69,6 +73,7 @@ function RoomMessage({ roomMessageId }) {
         const historyMessages = historyChat.data.messages;
         for (let i = 0; i < historyMessages.length; i++) {
           const msg = {
+            id: historyMessages[i]._id,
             from_id: historyMessages[i].from_id,
             room_id: historyMessages[i].roomMessageId,
             content: historyMessages[i].message,
@@ -142,7 +147,13 @@ function RoomMessage({ roomMessageId }) {
         <div className={cx("item")}>Leave chat</div>
       </div>
     );
-  }
+  };
+
+  const deleteMessage = async (id) => {
+    const res = await chatAPI.deleteMessage(id);
+    console.log(res);
+  };
+
 
   return (
     <div className={cx('wrapper')}>
@@ -179,7 +190,9 @@ function RoomMessage({ roomMessageId }) {
                           timestamp={m.created_at}
                           username={sendersInfo.current[m.from_id].username}
                           avatar={sendersInfo.current[m.from_id].avatar}
-                          key={index}
+                          key={m.id}
+                          id={m.id}
+                          deleteMessage={deleteMessage}
                         />
                       ),
                   )}
