@@ -21,6 +21,15 @@ const userAPI = {
       console.log('Error', err);
     }
   },
+  upLoadUserInfo: async ({ id, data }) => {
+    try {
+      const url = '/users/' + id;
+      const res = await axiosClient.put(url, data);
+      return res.data;
+    } catch (err) {
+      console("Error", err);
+    }
+  }
 };
 
 export default userAPI;

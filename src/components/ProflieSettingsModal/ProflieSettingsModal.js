@@ -32,8 +32,20 @@ function ProflieSettingsModal() {
     setName(e.target.value);
   };
 
-  const onSubmit = () => {
-    alert(`change Name ${name}`);
+  const onSubmit = async () => {
+    if (name === "") {
+      return;
+    }
+
+    if (name !== myUser.name) {
+      const res = await userAPI.upLoadUserInfo({
+        id: myUser.id,
+        data: {
+          name: name ? name : null,
+        }
+      });
+      console.log(res);
+    }
     store.dispatch(
       Actions.showProfileSettingsModal(false)
     );
