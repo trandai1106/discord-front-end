@@ -10,10 +10,12 @@ import DirectMessageOption from './DirectMessageOption/DirectMessageOption';
 import chatAPI from '../../api/chatAPI';
 import chatRoomAPI from '../../api/chatRoomAPI';
 import socket from '../../socket';
+import store from '../../store/store';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
+  const myUser = store.getState().auth.user;
   const [showChannels, setShowChannels] = useState(true);
   const [showDirectMessages, setShowDirectMessages] = useState(true);
   const [width, setWidth] = useState(300);
@@ -37,7 +39,8 @@ function Sidebar() {
 
     socket.on("s_roomMessage", () => {
       getSizebarOptions();
-    })
+    });
+
   }, []);
 
   // Setups for adjusting sidebar width

@@ -43,6 +43,35 @@
   position: relative;
   padding: 0 20px;
 
+  .channel-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    .action {
+      cursor: pointer;
+      position: relative;
+
+      .actions-container {
+        position: absolute;
+        left: 30px;
+        top: 8px;
+        width: 160px;
+        padding: 10px 20px;
+        background-color: #fff;
+        z-index: 10;
+        border: 1px solid #ccc;
+        cursor: default;
+
+        .item {
+          padding: 6px 0;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
   .call-icon {
     cursor: pointer;
   }

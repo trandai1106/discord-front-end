@@ -6,6 +6,7 @@ import styles from "./UserMenu.module.scss";
 import authAPI from '../../api/authAPI';
 import store from "../../store/store";
 import * as Actions from "../../store/actions/index";
+import socket from "../../socket";
 
 const cx = classNames.bind(styles);
 
@@ -27,6 +28,7 @@ function UserMenu() {
   };
 
   const handleLogout = () => {
+    socket.disconnect();
     authAPI.logout();
     navigate('/login');
   };

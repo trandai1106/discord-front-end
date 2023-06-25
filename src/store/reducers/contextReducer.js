@@ -8,6 +8,7 @@ export const initialState = {
     userId: "",
   },
   showAccountSettingsModal: false,
+  showCallModal: false,
 };
 
 const context = (state = initialState, action) => {
@@ -33,6 +34,11 @@ const context = (state = initialState, action) => {
         ...state,
         showAccountSettingsModal: action.payload
       };
+    case Types.TOGGLE_CALL_MODAL:
+      return {
+        ...state,
+        showCallModal: action.payload
+      }
     default: return state;
   }
 };

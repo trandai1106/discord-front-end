@@ -40,4 +40,11 @@ export const toogleAccountSettingsModal = (show) => {
         type: Types.TOGGLE_ACCOUNT_SETTINGS_MODAL,
         payload: show
     }
-}
+};
+
+export const toggleCallModal = (show) => {
+    return {
+        type: Types.TOGGLE_CALL_MODAL,
+        payload: show
+    }
+};

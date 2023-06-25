@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import { useEffect, useState, useRef } from "react";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPhone, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import ScrollableFeed from "react-scrollable-feed";
 import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
@@ -26,16 +26,16 @@ function DirectMessage({ directMessageId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [partner, setPartner] = useState();
-  // const [status, setStatus] = useState("");
-  const status = useRef("");
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const sendersInfo = useRef({ length: 0 });
   const messagesEnd = useRef();
+  const [showActions, setShowActions] = useState(false);
 
   useEffect(() => {
     setMessages([]);
     getMessageHistory();
+    setShowActions(false);
 
     socket.on("s_directMessage", (data) => {
       const msg = {
@@ -51,15 +51,6 @@ function DirectMessage({ directMessageId }) {
         } else {
           setMessages((oldMsgs) => [...oldMsgs, msg]);
         }
-      }
-    });
-
-    socket.on("updateUserOnlineList", (data) => {
-      console.log(data);
-      if (data.includes(directMessageId)) {
-        status.current = "online";
-      } else {
-        status.current = "offline";
       }
     });
 
@@ -127,28 +118,41 @@ function DirectMessage({ directMessageId }) {
   };
 
   const makeVideoCall = () => {
-    const callId = uuid4().toString();
-    socket.emit("directCall", {
-      call_id: callId,
-      from_id: myUser.id,
-      to_id: directMessageId,
-      from_name: myUser.name,
-    });
-    const callWindow = window.open(baseUrl + "/call/" + callId, '_blank', '_self');
-
     const msg = {
-      from_id: myUser.id,
+      from_id: cookies.id,
       to_id: directMessageId,
-      content: "Let make a new call",
+      content: "Made a new call",
       access_token: cookies.access_token,
       created_at: Date.now(),
     };
     socket.emit("c_directMessage", msg);
 
+    const callId = uuid4().toString();
+    socket.emit("directCall", {
+      call_id: callId,
+      from_id: cookies.id,
+      to_id: directMessageId,
+      from_name: myUser.name,
+    });
+    const callWindow = window.open(baseUrl + "/call/" + callId, '_blank', '_self');
+
     socket.on("rejectedCall", (data) => {
       callWindow.close();
     });
   };
+
+  const handleShowActions = () => {
+    console.log(showActions);
+    setShowActions(!showActions);
+  };
+
+  const renderActions = () => {
+    return (
+      <div className={cx("actions-container")}>
+        <div className={cx("item")}>Delete chat</div>
+      </div>
+    );
+  }
 
   return (
     <div className={cx("wrapper")}>
@@ -156,10 +160,13 @@ function DirectMessage({ directMessageId }) {
         <div className={cx("channel-header")}>
           <div className={cx("channel-name")}>
             {partner ? partner.name : ""}
-            {status.current ? " - " + status.current : ""}
+            <div className={cx("action")} onClick={handleShowActions} >
+              <FontAwesomeIcon icon={showActions ? faChevronUp : faChevronDown} />
+              {showActions && renderActions()}
+            </div>
           </div>
           <div className={cx("call-icon")} onClick={makeVideoCall}>
-            <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
+            <FontAwesomeIcon icon={faPhone} />
           </div>
         </div>
         <ScrollableFeed className={cx("messages")} ref={messagesEnd}>
