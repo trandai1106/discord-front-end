@@ -14,37 +14,37 @@ export const removeUserOutOfRedux = (userInfor) => {
     }
 }
 
-export const toggleIsLoading = (isLoading) => {
+export const showUserMenu = (show) => {
     return {
-        type: Types.TOGGLE_IS_LOADING,
-        payload: isLoading
-    }
-}
-
-export const toogleUserMenu = (show) => {
-    return {
-        type: Types.TOGGLE_USER_MENU,
+        type: Types.SHOW_USER_MENU,
         payload: show
     }
 }
 
-export const toogleUserProfile = ({ state, userId }) => {
+export const showUserProfile = ({ state, userId }) => {
     return {
-        type: Types.TOGGLE_USER_PROFILE,
+        type: Types.SHOW_USER_PROFILE,
         payload: { state, userId }
     }
 }
 
-export const toogleAccountSettingsModal = (show) => {
+export const showProfileSettingsModal = (show) => {
     return {
-        type: Types.TOGGLE_ACCOUNT_SETTINGS_MODAL,
+        type: Types.SHOW_PROFILE_SETTINGS_MODAL,
         payload: show
     }
 };
 
-export const toggleCallModal = (show) => {
+export const showCallModal = (show) => {
     return {
-        type: Types.TOGGLE_CALL_MODAL,
+        type: Types.SHOW_CALL_MODAL,
         payload: show
     }
 };
+
+export const showGroupMembersModal = (show) => {
+    return {
+        type: Types.SHOW_GROUP_MEMBERS_MODAL,
+        payload: show
+    }
+}; 

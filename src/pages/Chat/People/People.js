@@ -23,7 +23,7 @@ function People() {
 
   const hanldeClick = (userId) => {
     store.dispatch(
-      Actions.toogleUserProfile({
+      Actions.showUserProfile({
         state: true,
         userId: userId,
       }),

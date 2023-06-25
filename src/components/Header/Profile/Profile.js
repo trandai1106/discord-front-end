@@ -31,7 +31,7 @@ function Profile() {
 
   const handleToogleUserMenu = () => {
     const showUserMenu = store.getState().context.showUserMenu;
-    store.dispatch(Actions.toogleUserMenu(!showUserMenu));
+    store.dispatch(Actions.showUserMenu(!showUserMenu));
   };
 
   return (

@@ -27,8 +27,8 @@ function Message({ message, timestamp, username, avatar, userId }) {
     }
   };
 
-  const handleToggleUserProfile = () => {
-    store.dispatch(Actions.toogleUserProfile({
+  const handledShowUserProfile = () => {
+    store.dispatch(Actions.showUserProfile({
       state: true,
       userId: userId
     }))
@@ -39,7 +39,7 @@ function Message({ message, timestamp, username, avatar, userId }) {
       <img src={avatar} alt="" />
       <div className={cx("content")}>
         <h4 className={cx("title")} >
-          <div className={cx("username")} onClick={handleToggleUserProfile}>
+          <div className={cx("username")} onClick={handledShowUserProfile}>
             {username ? username : "..."}
           </div>
           <span className={cx("message-timestamp")}>

@@ -28,7 +28,7 @@ function UserProfile() {
 
   const handleClose = () => {
     store.dispatch(
-      Actions.toogleUserProfile({
+      Actions.showUserProfile({
         state: false,
         userId: '',
       }),
@@ -37,7 +37,7 @@ function UserProfile() {
 
   const handleUserEdit = () => {
     store.dispatch(
-      Actions.toogleAccountSettingsModal(true)
+      Actions.showProfileSettingsModal(true)
     );
   };
 

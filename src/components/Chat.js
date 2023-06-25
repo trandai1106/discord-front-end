@@ -13,7 +13,7 @@ import People from './People/People';
 import store from '../../store/store';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import UserProfile from '../../components/UserProfile/UserProfile';
-import ProflieSettingsModal from '../../components/ProflieSettingsModal/ProflieSettingsModal';
+import AccountSettingsModal from '../../components/AccountSettingsModal/AccountSettingsModal';
 import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
 import * as Actions from "../../store/actions/index";
@@ -30,7 +30,7 @@ function Chat() {
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
-  const [showProflieSettingsModal, setShowProflieSettingsModal] = useState(false);
+  const [showAccountSettingsModal, setShowAccountSettingsModal] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
   const [callData, setCallData] = useState(null);
 
@@ -40,7 +40,7 @@ function Chat() {
         ...data,
         type: "directCall"
       });
-      store.dispatch(Actions.showCallModal(true));
+      store.dispatch(Actions.toggleCallModal(true));
     });
 
     socket.on("roomCall", (data) => {
@@ -49,7 +49,7 @@ function Chat() {
         type: "roomCall"
       });
       if (data.from_id !== myUser.id) {
-        store.dispatch(Actions.showCallModal(true));
+        store.dispatch(Actions.toggleCallModal(true));
       }
     });
   }, []);
@@ -58,7 +58,7 @@ function Chat() {
     state.current = store.getState();
     setShowUserMenu(state.current.context.showUserMenu);
     setShowUserProfile(state.current.context.showUserProfile.state);
-    setShowProflieSettingsModal(state.current.context.showProfileSettingsModal);
+    setShowAccountSettingsModal(state.current.context.showAccountSettingsModal);
     setShowCallModal(state.current.context.showCallModal);
   };
   store.subscribe(handleChange);
@@ -66,7 +66,7 @@ function Chat() {
   return (
     <>
       <div className={cx('wrapper')}>
-        {showProflieSettingsModal && <ProflieSettingsModal />}
+        {showAccountSettingsModal && <AccountSettingsModal />}
         {showCallModal && <CallModal data={callData} />}
         {showUserMenu && <UserMenu />}
         <Header />

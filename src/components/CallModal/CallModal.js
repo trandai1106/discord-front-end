@@ -1,8 +1,6 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 import styles from "./CallModal.module.scss";
@@ -38,7 +36,7 @@ function CallModal(data) {
       };
       socket.emit("c_roomMessage", msg);
     }
-    store.dispatch(Actions.toggleCallModal(false));
+    store.dispatch(Actions.showCallModal(false));
   };
 
   const handleReject = () => {
@@ -63,7 +61,7 @@ function CallModal(data) {
       };
       socket.emit("c_roomMessage", msg);
     }
-    store.dispatch(Actions.toggleCallModal(false));
+    store.dispatch(Actions.showCallModal(false));
   };
 
   return (

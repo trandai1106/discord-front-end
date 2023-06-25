@@ -14,17 +14,17 @@ function UserMenu() {
   const navigate = useNavigate();
   const [cookies] = useCookies();
 
-  const handleToogleUserProfile = () => {
-    store.dispatch(Actions.toogleUserProfile({
+  const handleShowUserProfile = () => {
+    store.dispatch(Actions.showUserProfile({
       state: true,
       userId: cookies.id
     }));
-    store.dispatch(Actions.toogleUserMenu(false));
+    store.dispatch(Actions.showUserMenu(false));
   };
 
   const handleShowAccountSettings = () => {
-    store.dispatch(Actions.toogleAccountSettingsModal(true));
-    store.dispatch(Actions.toogleUserMenu(false));
+    store.dispatch(Actions.showProfileSettingsModal(true));
+    store.dispatch(Actions.showUserMenu(false));
   };
 
   const handleLogout = () => {
@@ -35,7 +35,7 @@ function UserMenu() {
 
   return <div className={cx('wrapper')}>
     <div className={cx('inner')}>
-      <div className={cx('item')} onClick={handleToogleUserProfile}>Profile</div>
+      <div className={cx('item')} onClick={handleShowUserProfile}>Profile</div>
       <div className={cx('item')} onClick={handleShowAccountSettings}>Account Settings</div>
       <div className={cx('item')} onClick={handleLogout}>Log out</div>
     </div>

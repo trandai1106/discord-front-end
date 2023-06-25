@@ -4,7 +4,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import styles from "./AccountSettingsModal.module.scss";
+import styles from "./GroupMembersModal.module.scss";
 import * as Actions from "../../store/actions/index";
 import store from '../../store/store';
 import { useState } from 'react';
@@ -15,53 +15,7 @@ import { useCookies } from 'react-cookie';
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
-function AccountSettingsModal() {
-  const [name, setName] = useState("Test");
-  const [previewAvatar, setPreviewAvatar] = useState(avatarBaseUrl + "/avatars/default_avatar_purple.jpg");
-  const [avatar, setAvatar] = useState(null);
-  const [cookies] = useCookies();
-  const navigate = useNavigate();
-  const userId = cookies.id;
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const res = await userAPI.getUserInfo(userId);
-      if (res.status === 0) {
-        authAPI.logout();
-        navigate('login');
-      }
-      setName(res.data.user.name);
-      setPreviewAvatar(avatarBaseUrl + res.data.user.avatar);
-      console.log(res);
-    };
-    if (userId !== '') {
-      getUserInfo();
-    }
-  }, [userId]);
-
-  const handleClose = () => {
-    store.dispatch(
-      Actions.toogleAccountSettingsModal(false)
-    );
-  }
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const onSubmit = () => {
-    alert(`change Name ${name}`);
-    store.dispatch(
-      Actions.toogleAccountSettingsModal(false)
-    );
-  }
-
-  const handleChangePreviewAvatar = (e) => {
-    if (e.target.files[0]) {
-      setPreviewAvatar(URL.createObjectURL(e.target.files[0]));
-      setAvatar(e.target.files[0]);
-    }
-  };
+function GroupMembersModal() {
 
   return (
     <div className={cx("overlay")}>
@@ -109,4 +63,4 @@ function AccountSettingsModal() {
   );
 };
 
-export default AccountSettingsModal;
+export default GroupMembersModal;
