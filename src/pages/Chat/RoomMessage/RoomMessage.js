@@ -53,8 +53,13 @@ function RoomMessage({ roomMessageId }) {
 
     socket.on('s_roomMessage', handleMessage);
 
+    socket.on("deleteRoomMessage", (data) => {
+      console.log(data);
+      setMessages(oldMsgs => oldMsgs.filter(msg => msg.id !== data.msg_id));
+    });
+
     return () => {
-      socket.off("s_directMessage", handleMessage);
+      socket.off("s_roomMessage", handleMessage);
     };
   }, [roomMessageId]);
 
@@ -150,10 +155,12 @@ function RoomMessage({ roomMessageId }) {
   };
 
   const deleteMessage = async (id) => {
-    const res = await chatAPI.deleteMessage(id);
-    console.log(res);
+    const res = await chatAPI.deleteRoomMessage(id);
+    if (res.status === 1) {
+      setMessages(oldMsgs => oldMsgs.filter(msg => msg.id !== id));
+      socket.emit("deleteRoomMessage", ({ from_id: cookies.id, room_id: roomMessageId, msg_id: id }));
+    }
   };
-
 
   return (
     <div className={cx('wrapper')}>

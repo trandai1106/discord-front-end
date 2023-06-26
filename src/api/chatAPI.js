@@ -21,9 +21,18 @@ const chatAPI = {
       console.log('Error', err);
     }
   },
-  deleteMessage: async (id) => {
+  deleteDirectMessage: async (id) => {
     try {
       const url = `/chat/direct-message/delete/${id}`;
+      const res = await axiosClient.delete(url);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
+  deleteRoomMessage: async (id) => {
+    try {
+      const url = `/room/delete/${id}`;
       const res = await axiosClient.delete(url);
       return res.data;
     } catch (err) {

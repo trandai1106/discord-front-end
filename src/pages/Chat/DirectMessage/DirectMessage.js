@@ -55,7 +55,7 @@ function DirectMessage({ directMessageId }) {
       }
     };
 
-    socket.on("deleteMessage", (data) => {
+    socket.on("deleteDirectMessage", (data) => {
       console.log(data);
       setMessages(oldMsgs => oldMsgs.filter(msg => msg.id !== data.msg_id));
     });
@@ -164,10 +164,10 @@ function DirectMessage({ directMessageId }) {
   };
 
   const deleteMessage = async (id) => {
-    const res = await chatAPI.deleteMessage(id);
+    const res = await chatAPI.deleteDirectMessage(id);
     if (res.status === 1) {
       setMessages(oldMsgs => oldMsgs.filter(msg => msg.id !== id));
-      socket.emit("deleteMessage", ({ to_id: directMessageId, msg_id: id }));
+      socket.emit("deleteDirectMessage", ({ to_id: directMessageId, msg_id: id }));
     }
   };
 
