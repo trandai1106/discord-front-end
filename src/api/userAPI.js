@@ -32,8 +32,14 @@ const userAPI = {
   },
   upLoadUserAvatar: async ({ id, data }) => {
     try {
+      const formData = new FormData();
+      formData.append("file", data);
       const url = '/users/avatar/' + id;
-      const res = await axiosClient.post(url, data);
+      const res = await axiosClient.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       return res.data;
     } catch (err) {
       console.log("Error", err);

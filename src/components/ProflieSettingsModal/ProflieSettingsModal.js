@@ -46,9 +46,7 @@ function ProflieSettingsModal() {
     if (avatar !== null) {
       const res = await userAPI.upLoadUserAvatar({
         id: myUser.id,
-        data: {
-          file: avatar,
-        }
+        data: avatar
       });
       console.log(res);
     }
