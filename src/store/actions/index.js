@@ -42,9 +42,9 @@ export const showCallModal = (show) => {
     }
 };
 
-export const showGroupMembersModal = (show) => {
+export const showGroupMembersModal = ({ state, groupId }) => {
     return {
         type: Types.SHOW_GROUP_MEMBERS_MODAL,
-        payload: show
+        payload: { state, groupId }
     }
 }; 

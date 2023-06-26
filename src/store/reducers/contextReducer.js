@@ -8,6 +8,10 @@ export const initialState = {
   },
   showProfileSettingsModal: false,
   showCallModal: false,
+  showGroupMembersModal: {
+    state: false,
+    groupId: "",
+  },
 };
 
 const context = (state = initialState, action) => {
@@ -31,6 +35,11 @@ const context = (state = initialState, action) => {
       return {
         ...state,
         showCallModal: action.payload
+      }
+    case Types.SHOW_GROUP_MEMBERS_MODAL:
+      return {
+        ...state,
+        showGroupMembersModal: action.payload
       }
     default: return state;
   }

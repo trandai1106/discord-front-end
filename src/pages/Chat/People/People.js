@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { useCookies } from 'react-cookie';
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 import styles from './People.module.scss';
 import userAPI from '../../../api/userAPI';
@@ -13,13 +14,31 @@ const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 function People() {
   const [users, setUsers] = useState([]);
   const [cookies] = useCookies();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    (async () => {
+    const getAllUsers = async () => {
       const res = await userAPI.getAllUsers();
       setUsers(res.data.users);
-    })();
-  }, []);
+    };
+
+    const getUserByName = async (query) => {
+      const res = await userAPI.searchUserByName(query);
+      console.log(res.data.users);
+      setUsers(res.data.users);
+    };
+
+    setQuery(searchParams.get("q"));
+    if (searchParams.get("q")) {
+      getUserByName(searchParams.get("q"));
+    } else {
+      getAllUsers();
+    }
+
+  }, [location]);
+
 
   const hanldeClick = (userId) => {
     store.dispatch(
@@ -33,7 +52,7 @@ function People() {
   return (
     <div className={cx('wrapper')}>
       <div className={cx('heading')}>
-        <h2>All users</h2>
+        {query ? <h2>Search results for {query}</h2> : <h2>All users</h2>}
       </div>
       <div className={cx('content')}>
         {users.map((user) => {

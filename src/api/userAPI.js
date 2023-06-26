@@ -27,7 +27,25 @@ const userAPI = {
       const res = await axiosClient.put(url, data);
       return res.data;
     } catch (err) {
-      console("Error", err);
+      console.log("Error", err);
+    }
+  },
+  upLoadUserAvatar: async ({ id, data }) => {
+    try {
+      const url = '/users/avatar/' + id;
+      const res = await axiosClient.post(url, data);
+      return res.data;
+    } catch (err) {
+      console.log("Error", err);
+    }
+  },
+  searchUserByName: async (q) => {
+    try {
+      const url = `/users/search?q=${q}`;
+      const res = await axiosClient.get(url);
+      return res.data;
+    } catch (err) {
+      console.log("Error", err);
     }
   }
 };

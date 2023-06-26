@@ -36,13 +36,11 @@ function DirectMessageOption({ userId }) {
 
     socket.emit("checkOnlineUserList", myUser.id);
     const currentId = searchParams.get('direct-message');
-    console.log(user.name, currentId);
     if (userId === currentId) {
       setNotification(false);
     } else {
       socket.on("s_directMessage", (data) => {
         if (data.from_id === userId) {
-          console.log(data.from_id, userId, currentId);
           setNotification(true);
         }
       });

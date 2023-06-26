@@ -17,6 +17,7 @@ import ProflieSettingsModal from '../../components/ProflieSettingsModal/ProflieS
 import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
 import * as Actions from "../../store/actions/index";
+import GroupMembersModal from '../../components/GroupMembersModal/GroupMembersModal';
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
@@ -31,6 +32,7 @@ function Chat() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showProflieSettingsModal, setShowProflieSettingsModal] = useState(false);
+  const [showGroupMembersModal, setShowGroupMembersModal] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
   const [callData, setCallData] = useState(null);
 
@@ -59,6 +61,7 @@ function Chat() {
     setShowUserMenu(state.current.context.showUserMenu);
     setShowUserProfile(state.current.context.showUserProfile.state);
     setShowProflieSettingsModal(state.current.context.showProfileSettingsModal);
+    setShowGroupMembersModal(state.current.context.showGroupMembersModal.state);
     setShowCallModal(state.current.context.showCallModal);
   };
   store.subscribe(handleChange);
@@ -68,6 +71,7 @@ function Chat() {
       <div className={cx('wrapper')}>
         {showProflieSettingsModal && <ProflieSettingsModal />}
         {showCallModal && <CallModal data={callData} />}
+        {showGroupMembersModal && <GroupMembersModal />}
         {showUserMenu && <UserMenu />}
         <Header />
         <div className={cx('container')}>

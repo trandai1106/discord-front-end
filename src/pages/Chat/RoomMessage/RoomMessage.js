@@ -15,6 +15,7 @@ import chatRoomAPI from '../../../api/chatRoomAPI';
 import socket from '../../../socket';
 import store from '../../../store/store';
 import chatAPI from '../../../api/chatAPI';
+import * as Actions from "../../../store/actions/index";
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
@@ -145,10 +146,17 @@ function RoomMessage({ roomMessageId }) {
     setShowActions(!showActions);
   };
 
+  const handleShowGroupMembersModal = () => {
+    store.dispatch(Actions.showGroupMembersModal({
+      state: true,
+      groupId: roomMessageId
+    }));
+  }
+
   const renderActions = () => {
     return (
       <div className={cx("actions-container")}>
-        <div className={cx("item")}>Members</div>
+        <div className={cx("item")} onClick={handleShowGroupMembersModal}>Members</div>
         <div className={cx("item")}>Leave chat</div>
       </div>
     );

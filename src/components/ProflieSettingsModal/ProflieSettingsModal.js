@@ -26,30 +26,37 @@ function ProflieSettingsModal() {
     store.dispatch(
       Actions.showProfileSettingsModal(false)
     );
-  }
+  };
 
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
   const onSubmit = async () => {
-    if (name === "") {
-      return;
-    }
-
-    if (name !== myUser.name) {
+    if (name !== "" && name !== myUser.name) {
       const res = await userAPI.upLoadUserInfo({
         id: myUser.id,
         data: {
-          name: name ? name : null,
+          name: name,
         }
       });
       console.log(res);
     }
+
+    if (avatar !== null) {
+      const res = await userAPI.upLoadUserAvatar({
+        id: myUser.id,
+        data: {
+          file: avatar,
+        }
+      });
+      console.log(res);
+    }
+
     store.dispatch(
       Actions.showProfileSettingsModal(false)
     );
-  }
+  };
 
   const handleChangePreviewAvatar = (e) => {
     if (e.target.files[0]) {

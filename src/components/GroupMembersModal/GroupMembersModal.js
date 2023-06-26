@@ -17,45 +17,28 @@ const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
 function GroupMembersModal() {
 
+  const handleClose = () => {
+    store.dispatch(Actions.showGroupMembersModal({
+      state: false,
+      groupId: ''
+    }));
+  };
+
   return (
     <div className={cx("overlay")}>
       <div className={cx("inner")}>
         <div className={cx("container")}>
           <div className={cx("header")}>
-            <div className={cx("header__title")}>Account settings</div>
+            <div className={cx("header__title")}>Group members</div>
             <div onClick={handleClose} className={cx('close-icon')}>
               <FontAwesomeIcon icon={faXmark} />
             </div>
           </div>
           <div className={cx("content")}>
-            <div className={cx("avatar")}>
-              <img src={previewAvatar} alt="avatar"></img>
-              <div className={cx("upload", "btn")}>
-                <input
-                  name="avatar"
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={handleChangePreviewAvatar}
-                ></input>
-                Upload Photo
-              </div>
 
-            </div>
-            <div className={cx("actions")}>
-              <div className={cx("action-item")}>
-                <div className={cx("title")}>Name</div>
-                <input value={name} onChange={handleNameChange}></input>
-              </div>
-              {/* <div className="password">Change Password</div>
-              <div className={cx("action-item")}>
-                <div className={cx("title")}>Password</div>
-                <input placeholder="Password"></input>
-              </div> */}
-            </div>
           </div>
           <div className={cx("footer")}>
-            <div className={cx("btn")} onClick={handleClose}>Cancel</div>
-            <div className={cx("btn", "primary")} onClick={onSubmit}>Save changes</div>
+            <div className={cx("btn")} onClick={handleClose}>Close</div>
           </div>
         </div>
       </div>
