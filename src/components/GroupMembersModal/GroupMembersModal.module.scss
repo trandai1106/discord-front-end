@@ -47,8 +47,8 @@
   justify-content: center;
 
   img {
-    width: 200px;
-    width: 200px;
+    width: 40px;
+    width: 40px;
     border-radius: 10px;
   }
 
@@ -109,5 +109,21 @@
   .btn.primary {
     background-color: rgb(31, 118, 0);
     color: #fff;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  flex-wrap: wrap;
+  height: 100%;
+  overflow: auto;
+
+  .content-item {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }

@@ -41,14 +41,14 @@ const chatRoomAPI = {
   },
   getMembers: async (id) => {
     try {
-      const url = `/api/rooms/${id}/approved-participants`;
+      const url = `/room/chatroom/${id}/users`;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  addMembers: async (id, members) => { },
+  addMembers: async (id, members) => {},
 };
 
 export default chatRoomAPI;
