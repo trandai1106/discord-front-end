@@ -2,7 +2,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 
 import styles from './Chat.module.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -16,7 +16,7 @@ import UserProfile from '../../components/UserProfile/UserProfile';
 import ProflieSettingsModal from '../../components/ProflieSettingsModal/ProflieSettingsModal';
 import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
-import * as Actions from "../../store/actions/index";
+import * as Actions from '../../store/actions/index';
 import GroupMembersModal from '../../components/GroupMembersModal/GroupMembersModal';
 
 const cx = classNames.bind(styles);
@@ -37,18 +37,18 @@ function Chat() {
   const [callData, setCallData] = useState(null);
 
   useEffect(() => {
-    socket.on("directCall", (data) => {
+    socket.on('directCall', (data) => {
       setCallData({
         ...data,
-        type: "directCall"
+        type: 'directCall',
       });
       store.dispatch(Actions.showCallModal(true));
     });
 
-    socket.on("roomCall", (data) => {
+    socket.on('roomCall', (data) => {
       setCallData({
         ...data,
-        type: "roomCall"
+        type: 'roomCall',
       });
       if (data.from_id !== myUser.id) {
         store.dispatch(Actions.showCallModal(true));
@@ -71,7 +71,7 @@ function Chat() {
       <div className={cx('wrapper')}>
         {showProflieSettingsModal && <ProflieSettingsModal />}
         {showCallModal && <CallModal data={callData} />}
-        {showGroupMembersModal && <GroupMembersModal />}
+        {showGroupMembersModal && <GroupMembersModal id={channelId} />}
         {showUserMenu && <UserMenu />}
         <Header />
         <div className={cx('container')}>
@@ -85,7 +85,6 @@ function Chat() {
         </div>
       </div>
     </>
-
   );
 }
 
