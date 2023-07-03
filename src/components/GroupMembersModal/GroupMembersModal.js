@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faSearch, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -51,6 +51,12 @@ function GroupMembersModal(props) {
         userId: userId,
       }),
     );
+    store.dispatch(
+      Actions.showGroupMembersModal({
+        state: false,
+        groupId: '',
+      }),
+    );
   };
 
   return (
@@ -64,29 +70,46 @@ function GroupMembersModal(props) {
             </div>
           </div>
           <div className={cx('content')}>
-            {members.length != 0
-              ? members.map((members, index) => {
+            <div className={cx('search-container')}>
+              <FontAwesomeIcon icon={faSearch} />
+              <input type='text' placeholder='Find members'></input>
+            </div>
+            <ul className={cx('member-list')}>
+              <li className={cx('member-item')}>
+                <div className={cx('member-avatar')}>
+                  <FontAwesomeIcon icon={faUserPlus} />
+                </div>
+                <div
+                  className={cx('member-name')}
+                >
+                  Add people
+                </div>
+              </li>
+              {members.length != 0
+                ? members.map((members, index) => {
                   // return members.length === 0 ? (
                   //   <></>
                   // ) : (
                   return (
-                    <div className={cx('content-item')}>
-                      <div className={cx('avatar')}>
-                        <img src={avatarBaseUrl + members.avatar_url}></img>
+                    <li className={cx('member-item')}>
+                      <div className={cx('member-avatar')}>
+                        <img src={avatarBaseUrl + members.avatar_url} alt='avatar'></img>
                       </div>
                       <div
-                        className={cx('name')}
+                        className={cx('member-name')}
                         onClick={() => {
                           hanldeClick(members._id);
                         }}
                       >
                         {members.name}
                       </div>
-                    </div>
+                    </li>
                   );
                   // );
                 })
-              : ''}
+                : ''}
+            </ul>
+
           </div>
           <div className={cx('footer')}>
             <div className={cx('btn')} onClick={handleClose}>
