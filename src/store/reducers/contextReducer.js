@@ -4,14 +4,15 @@ export const initialState = {
   showUserMenu: false,
   showUserProfile: {
     state: false,
-    userId: "",
+    userId: '',
   },
   showProfileSettingsModal: false,
   showCallModal: false,
   showGroupMembersModal: {
     state: false,
-    groupId: "",
+    groupId: '',
   },
+  showCreateGroupModal: false,
 };
 
 const context = (state = initialState, action) => {
@@ -19,29 +20,35 @@ const context = (state = initialState, action) => {
     case Types.SHOW_USER_MENU:
       return {
         ...state,
-        showUserMenu: action.payload
+        showUserMenu: action.payload,
       };
     case Types.SHOW_USER_PROFILE:
       return {
         ...state,
-        showUserProfile: action.payload
+        showUserProfile: action.payload,
       };
     case Types.SHOW_PROFILE_SETTINGS_MODAL:
       return {
         ...state,
-        showProfileSettingsModal: action.payload
+        showProfileSettingsModal: action.payload,
       };
     case Types.SHOW_CALL_MODAL:
       return {
         ...state,
-        showCallModal: action.payload
-      }
+        showCallModal: action.payload,
+      };
     case Types.SHOW_GROUP_MEMBERS_MODAL:
       return {
         ...state,
-        showGroupMembersModal: action.payload
-      }
-    default: return state;
+        showGroupMembersModal: action.payload,
+      };
+    case Types.SHOW_CREATE_GROUP_MODAL:
+      return {
+        ...state,
+        showCreateGroupModal: action.payload,
+      };
+    default:
+      return state;
   }
 };
 

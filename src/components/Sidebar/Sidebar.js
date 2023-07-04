@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { faSortDown, faSortUp, faHashtag, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faSortDown, faSortUp, faHashtag, faUserGroup, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,12 +10,13 @@ import DirectMessageOption from './DirectMessageOption/DirectMessageOption';
 import chatAPI from '../../api/chatAPI';
 import chatRoomAPI from '../../api/chatRoomAPI';
 import socket from '../../socket';
+import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
-  const myUser = store.getState().auth.user;
   const [showChannels, setShowChannels] = useState(true);
   const [showDirectMessages, setShowDirectMessages] = useState(true);
   const [width, setWidth] = useState(300);
@@ -33,14 +34,13 @@ function Sidebar() {
     };
     getSizebarOptions();
 
-    socket.on("s_directMessage", () => {
+    socket.on('s_directMessage', () => {
       getSizebarOptions();
     });
 
-    socket.on("s_roomMessage", () => {
+    socket.on('s_roomMessage', () => {
       getSizebarOptions();
     });
-
   }, []);
 
   // Setups for adjusting sidebar width
@@ -66,6 +66,10 @@ function Sidebar() {
   const handleMouseUp = (event) => {
     event.target.classList.remove(cx('resize-active'));
     setIsResizing(false);
+  };
+
+  const handleAddGroup = () => {
+    store.dispatch(Actions.showCreateGroupModal(true));
   };
 
   return (
@@ -103,6 +107,10 @@ function Sidebar() {
           rooms.map((room, index) => {
             return <ChannelOption key={index} title={room.name} icon={faHashtag} id={room._id} />;
           })}
+        <div className={cx('add-channel')} onClick={handleAddGroup}>
+          <FontAwesomeIcon className={cx('add-channel-icon')} icon={faPlus} />
+          Add channels
+        </div>
         <div className={cx('spread')}></div>
         <SidebarNav
           title="Direct messages"

@@ -18,6 +18,7 @@ import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
 import * as Actions from '../../store/actions/index';
 import GroupMembersModal from '../../components/GroupMembersModal/GroupMembersModal';
+import CreateGroupModal from '../../components/CreateGroupModal/CreateGroupModal';
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
@@ -34,6 +35,7 @@ function Chat() {
   const [showProflieSettingsModal, setShowProflieSettingsModal] = useState(false);
   const [showGroupMembersModal, setShowGroupMembersModal] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [callData, setCallData] = useState(null);
 
   useEffect(() => {
@@ -63,6 +65,7 @@ function Chat() {
     setShowProflieSettingsModal(state.current.context.showProfileSettingsModal);
     setShowGroupMembersModal(state.current.context.showGroupMembersModal.state);
     setShowCallModal(state.current.context.showCallModal);
+    setShowCreateGroupModal(state.current.context.showCreateGroupModal);
   };
   store.subscribe(handleChange);
 
@@ -73,6 +76,7 @@ function Chat() {
         {showCallModal && <CallModal data={callData} />}
         {showGroupMembersModal && <GroupMembersModal id={channelId} />}
         {showUserMenu && <UserMenu />}
+        {showCreateGroupModal && <CreateGroupModal />}
         <Header />
         <div className={cx('container')}>
           <Sidebar />

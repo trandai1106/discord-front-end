@@ -1,6 +1,4 @@
 import axiosClient from './axiosClient';
-import * as Actions from './../store/actions';
-import { store } from './../index';
 
 const userAPI = {
   getUserInfo: async (to_id) => {
@@ -27,22 +25,22 @@ const userAPI = {
       const res = await axiosClient.put(url, data);
       return res.data;
     } catch (err) {
-      console.log("Error", err);
+      console.log('Error', err);
     }
   },
   upLoadUserAvatar: async ({ id, data }) => {
     try {
       const formData = new FormData();
-      formData.append("file", data);
+      formData.append('file', data);
       const url = '/users/avatar/' + id;
       const res = await axiosClient.post(url, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
       return res.data;
     } catch (err) {
-      console.log("Error", err);
+      console.log('Error', err);
     }
   },
   searchUserByName: async (q) => {
@@ -51,9 +49,9 @@ const userAPI = {
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
-      console.log("Error", err);
+      console.log('Error', err);
     }
-  }
+  },
 };
 
 export default userAPI;

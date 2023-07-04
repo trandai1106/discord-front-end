@@ -1,39 +1,83 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faSearch, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faSearch, faUserPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Spin } from 'antd';
 
 import styles from './GroupMembersModal.module.scss';
 import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
-import { useState } from 'react';
-import userAPI from '../../api/userAPI';
-import authAPI from '../../api/authAPI';
+// import userAPI from '../../api/userAPI';
+// import authAPI from '../../api/authAPI';
 import chatRoomAPI from '../../api/chatRoomAPI';
-import { useCookies } from 'react-cookie';
 
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
-function GroupMembersModal(props) {
-  var [members, setMembers] = useState([]);
+function GroupMembersModal() {
+  const [members, setMembers] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [addMember, setAddMember] = useState(false);
+  const [isloading, setIsLoading] = useState(true);
+  const [searchMode, setSearchMode] = useState(false);
+  const state = store.getState().context.showGroupMembersModal;
 
   useEffect(() => {
-    const getMembers = async () => {
-      const res = await chatRoomAPI.getMembers(props.id);
-      if (res) {
-        if (res.data) {
-          members = res.data.members;
-          setMembers(members);
-          console.log(members);
-        }
-      }
-    };
-    if (props) {
-      getMembers(props.id);
+    getMembersInGroup();
+  }, []);
+
+  const getMembersInGroup = async () => {
+    setIsLoading(true);
+    const res = await chatRoomAPI.getMembers(state.groupId);
+    if (res.status) {
+      console.log(res);
+      setMembers(res.data);
     }
-  }, [props.id]);
+    setIsLoading(false);
+  };
+
+  const getPeopleNotInGroup = async () => {
+    setIsLoading(true);
+    const res = await chatRoomAPI.getPeopleNotInGroup(state.groupId);
+    if (res.status) {
+      setMembers(res.data);
+    }
+    console.log(res);
+    setIsLoading(false);
+  };
+
+  const handleSearchMembersInGroup = async () => {
+    setIsLoading(true);
+    const res = await chatRoomAPI.searchMembersByName({
+      groupId: state.groupId,
+      query: searchInput,
+    });
+    setSearchMode(true);
+    setIsLoading(false);
+    setMembers(res.data);
+  };
+
+  const handleSearchPeopleNotInGroup = async () => {
+    setIsLoading(true);
+    const res = await chatRoomAPI.searchPeopleNotInGroupByName({
+      groupId: state.groupId,
+      query: searchInput,
+    });
+    setSearchMode(true);
+    setMembers(res.data);
+    setIsLoading(false);
+  };
+
+  const toggleAddMember = () => {
+    if (!addMember) {
+      setAddMember(true);
+      getPeopleNotInGroup();
+    } else {
+      setAddMember(false);
+      getMembersInGroup();
+    }
+  };
 
   const handleClose = () => {
     store.dispatch(
@@ -44,7 +88,7 @@ function GroupMembersModal(props) {
     );
   };
 
-  const hanldeClick = (userId) => {
+  const hanldeShowMemberProfile = (userId) => {
     store.dispatch(
       Actions.showUserProfile({
         state: true,
@@ -59,57 +103,164 @@ function GroupMembersModal(props) {
     );
   };
 
+  const handleAddMember = async (userId) => {
+    console.log(userId);
+    const res = await chatRoomAPI.addMember({
+      channelId: state.groupId,
+      userId: userId,
+    });
+    console.log(res);
+    // setMembers(() => {
+    //   members.filter((member) => member._id !== userId);
+    // });
+  };
+
   return (
     <div className={cx('overlay')}>
       <div className={cx('inner')}>
         <div className={cx('container')}>
           <div className={cx('header')}>
-            <div className={cx('header__title')}>Group members</div>
+            {addMember ? (
+              <div className={cx('header__title')}>Add people</div>
+            ) : (
+              <div className={cx('header__title')}>Group member</div>
+            )}
             <div onClick={handleClose} className={cx('close-icon')}>
               <FontAwesomeIcon icon={faXmark} />
             </div>
           </div>
           <div className={cx('content')}>
-            <div className={cx('search-container')}>
-              <FontAwesomeIcon icon={faSearch} />
-              <input type='text' placeholder='Find members'></input>
-            </div>
-            <ul className={cx('member-list')}>
-              <li className={cx('member-item')}>
-                <div className={cx('member-avatar')}>
-                  <FontAwesomeIcon icon={faUserPlus} />
+            {addMember ? (
+              <div className={cx('add-member')}>
+                <div className={cx('back-btn')} onClick={toggleAddMember}>
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                  Back
                 </div>
-                <div
-                  className={cx('member-name')}
-                >
-                  Add people
+                <div className={cx('add-member-note')}>
+                  New members will be able to see all of message history, including any files that have been shared in
+                  the channel. If you'd like, you can create a new channel instead.
                 </div>
-              </li>
-              {members.length != 0
-                ? members.map((members, index) => {
-                  // return members.length === 0 ? (
-                  //   <></>
-                  // ) : (
-                  return (
-                    <li className={cx('member-item')}>
-                      <div className={cx('member-avatar')}>
-                        <img src={avatarBaseUrl + members.avatar_url} alt='avatar'></img>
+                <div className={cx('search-container')}>
+                  <FontAwesomeIcon icon={faSearch} />
+                  <input
+                    type="text"
+                    placeholder="Find other people"
+                    value={searchInput}
+                    onChange={(e) => {
+                      setSearchInput(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13) {
+                        handleSearchPeopleNotInGroup();
+                      }
+                    }}
+                  ></input>
+                </div>
+                {isloading ? (
+                  <div className={cx('loading')}>
+                    <Spin />
+                  </div>
+                ) : (
+                  <ul className={cx('add-member-list', 'member-list')}>
+                    {searchMode && (
+                      <div className={cx('search-heading')}>
+                        <FontAwesomeIcon
+                          className={cx('search-back-icon')}
+                          icon={faArrowLeft}
+                          onClick={() => {
+                            getPeopleNotInGroup();
+                            setSearchMode(false);
+                          }}
+                        />
+                        Search results for {searchInput}
                       </div>
-                      <div
-                        className={cx('member-name')}
+                    )}
+                    {members.length !== 0
+                      ? members.map((members, index) => {
+                          return (
+                            <li className={cx('add-member-item', 'member-item')} key={members._id}>
+                              <div className={cx('add-member-avatar', 'member-avatar')}>
+                                <img src={avatarBaseUrl + members.avatar_url} alt="avatar"></img>
+                              </div>
+                              <div
+                                className={cx('add-member-name', 'member-name')}
+                                onClick={() => {
+                                  hanldeShowMemberProfile(members._id);
+                                }}
+                              >
+                                {members.name}
+                              </div>
+                              <div className={cx('add-member-add-btn')} onClick={() => handleAddMember(members._id)}>
+                                Add
+                              </div>
+                            </li>
+                          );
+                        })
+                      : ''}
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <div className={cx('current-members')}>
+                <div className={cx('search-container')}>
+                  <FontAwesomeIcon icon={faSearch} />
+                  <input
+                    type="text"
+                    placeholder="Find members in group"
+                    value={searchInput}
+                    onChange={(e) => {
+                      setSearchInput(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.keyCode === 13) {
+                        handleSearchMembersInGroup();
+                      }
+                    }}
+                  ></input>
+                </div>
+                <ul className={cx('member-list')}>
+                  {searchMode ? (
+                    <div className={cx('search-heading')}>
+                      <FontAwesomeIcon
+                        className={cx('search-back-icon')}
+                        icon={faArrowLeft}
                         onClick={() => {
-                          hanldeClick(members._id);
+                          getMembersInGroup();
+                          setSearchMode(false);
                         }}
-                      >
-                        {members.name}
+                      />
+                      Search results for {searchInput}
+                    </div>
+                  ) : (
+                    <li className={cx('member-item')} onClick={toggleAddMember}>
+                      <div className={cx('member-avatar')}>
+                        <FontAwesomeIcon icon={faUserPlus} />
                       </div>
+                      <div className={cx('member-name')}>Add people</div>
                     </li>
-                  );
-                  // );
-                })
-                : ''}
-            </ul>
-
+                  )}
+                  {members.length !== 0
+                    ? members.map((members, index) => {
+                        return (
+                          <li className={cx('member-item')} key={members._id}>
+                            <div className={cx('member-avatar')}>
+                              <img src={avatarBaseUrl + members.avatar_url} alt="avatar"></img>
+                            </div>
+                            <div
+                              className={cx('member-name')}
+                              onClick={() => {
+                                hanldeShowMemberProfile(members._id);
+                              }}
+                            >
+                              {members.name}
+                            </div>
+                          </li>
+                        );
+                      })
+                    : ''}
+                </ul>
+              </div>
+            )}
           </div>
           <div className={cx('footer')}>
             <div className={cx('btn')} onClick={handleClose}>

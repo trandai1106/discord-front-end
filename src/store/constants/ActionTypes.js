@@ -5,6 +5,7 @@ const SHOW_USER_PROFILE = 'show_user_profile';
 const SHOW_PROFILE_SETTINGS_MODAL = 'show_profile_settings_modal';
 const SHOW_CALL_MODAL = 'show_call_modal';
 const SHOW_GROUP_MEMBERS_MODAL = 'show_group_members_modal';
+const SHOW_CREATE_GROUP_MODAL = 'show_create_group_modal';
 
 export {
   SAVE_USER_TO_REDUX,
@@ -13,5 +14,6 @@ export {
   SHOW_USER_PROFILE,
   SHOW_PROFILE_SETTINGS_MODAL,
   SHOW_CALL_MODAL,
-  SHOW_GROUP_MEMBERS_MODAL
+  SHOW_GROUP_MEMBERS_MODAL,
+  SHOW_CREATE_GROUP_MODAL,
 };

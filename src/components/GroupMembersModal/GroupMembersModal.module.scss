@@ -57,6 +57,20 @@
   }
 }
 
+.add-member-note {
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+.back-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
 .member-list {
   margin-left: 20px;
   display: flex;
@@ -70,7 +84,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    cursor: pointer;
 
     .member-avatar {
       width: 40px;
@@ -79,6 +92,7 @@
       align-items: center;
       justify-content: center;
       font-size: 24px;
+      cursor: pointer;
 
       img {
         width: 100%;
@@ -89,7 +103,21 @@
 
     .member-name {
       margin-left: 20px;
+      cursor: pointer;
     }
+  }
+}
+
+.add-member-item {
+  position: relative;
+
+  .add-member-add-btn {
+    position: absolute;
+    right: 40px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
   }
 }
 
@@ -118,4 +146,24 @@
     background-color: rgb(31, 118, 0);
     color: #fff;
   }
+}
+
+.search-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+
+  .search-back-icon {
+    cursor: pointer;
+  }
+}
+
+.loading {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
