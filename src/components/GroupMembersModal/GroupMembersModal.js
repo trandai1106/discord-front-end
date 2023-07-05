@@ -4,6 +4,7 @@ import { faXmark, faSearch, faUserPlus, faArrowLeft } from '@fortawesome/free-so
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Spin } from 'antd';
+import { useCookies } from 'react-cookie';
 
 import styles from './GroupMembersModal.module.scss';
 import * as Actions from '../../store/actions/index';
@@ -22,10 +23,18 @@ function GroupMembersModal() {
   const [isloading, setIsLoading] = useState(true);
   const [searchMode, setSearchMode] = useState(false);
   const state = store.getState().context.showGroupMembersModal;
+  const [adminId, setAdminId] = useState('');
+  const [cookies] = useCookies();
 
   useEffect(() => {
     getMembersInGroup();
+    getGroupInfomation();
   }, []);
+
+  const getGroupInfomation = async () => {
+    const res = await chatRoomAPI.getRoom(state.groupId);
+    setAdminId(res.data.room.admin);
+  };
 
   const getMembersInGroup = async () => {
     setIsLoading(true);
@@ -104,15 +113,25 @@ function GroupMembersModal() {
   };
 
   const handleAddMember = async (userId) => {
-    console.log(userId);
     const res = await chatRoomAPI.addMember({
       channelId: state.groupId,
       userId: userId,
     });
     console.log(res);
-    // setMembers(() => {
-    //   members.filter((member) => member._id !== userId);
-    // });
+    setMembers(() => {
+      return members.filter((member) => member._id !== userId);
+    });
+  };
+
+  const handleDeleteMember = async (userId) => {
+    const res = await chatRoomAPI.deleteMember({
+      channelId: state.groupId,
+      userId: userId,
+    });
+    console.log(res);
+    setMembers(() => {
+      return members.filter((member) => member._id !== userId);
+    });
   };
 
   return (
@@ -253,7 +272,13 @@ function GroupMembersModal() {
                               }}
                             >
                               {members.name}
+                              {adminId === members._id ? ' (admin)' : ''}
                             </div>
+                            {cookies.id !== members._id && cookies.id === adminId && (
+                              <div className={cx('member-delete')} onClick={() => handleDeleteMember(members._id)}>
+                                Delete
+                              </div>
+                            )}
                           </li>
                         );
                       })

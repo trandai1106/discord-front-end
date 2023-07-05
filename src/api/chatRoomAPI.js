@@ -93,7 +93,7 @@ const chatRoomAPI = {
   },
   deleteMember: async ({ channelId, userId }) => {
     try {
-      const url = `/room/users/add/${channelId}`;
+      const url = `/room/users/delete/${channelId}`;
       const res = await axiosClient.post(url, { userId: userId });
       return res.data;
     } catch (err) {
