@@ -1,9 +1,9 @@
 import axiosClient from './axiosClient';
 
 const userAPI = {
-  getUserInfo: async (to_id) => {
+  getUserInfo: async (userId) => {
     try {
-      const url = '/users/' + to_id;
+      const url = '/users/information/' + userId;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
@@ -12,27 +12,27 @@ const userAPI = {
   },
   getAllUsers: async () => {
     try {
-      const url = '/users';
+      const url = '/users/all';
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  upLoadUserInfo: async ({ id, data }) => {
+  upLoadUserInfo: async ({ userId, data }) => {
     try {
-      const url = '/users/' + id;
+      const url = '/users/update/' + userId;
       const res = await axiosClient.put(url, data);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  upLoadUserAvatar: async ({ id, data }) => {
+  upLoadUserAvatar: async ({ userId, data }) => {
     try {
       const formData = new FormData();
       formData.append('file', data);
-      const url = '/users/avatar/' + id;
+      const url = '/users/avatar/' + userId;
       const res = await axiosClient.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

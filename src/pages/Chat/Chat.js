@@ -1,14 +1,13 @@
 /* eslint-disable no-unused-expressions */
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { useSearchParams } from 'react-router-dom';
 
 import styles from './Chat.module.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Header from '../../components/Header/Header';
 import DirectMessage from './DirectMessage/DirectMessage';
-import RoomMessage from './RoomMessage/RoomMessage';
+import ChannelMessage from './ChannelMessage/ChannelMessage';
 import People from './People/People';
 import store from '../../store/store';
 import UserMenu from '../../components/UserMenu/UserMenu';
@@ -17,14 +16,12 @@ import ProflieSettingsModal from '../../components/ProflieSettingsModal/ProflieS
 import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
 import * as Actions from '../../store/actions/index';
-import GroupMembersModal from '../../components/GroupMembersModal/GroupMembersModal';
-import CreateGroupModal from '../../components/CreateGroupModal/CreateGroupModal';
+import GroupMembersModal from '../../components/ChannelMembersModal/ChannelMembersModal';
+import CreateChannelModal from '../../components/CreateChannelModal/CreateChannelModal';
 
 const cx = classNames.bind(styles);
-const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function Chat() {
-  const [cookies] = useCookies();
   const [searchParams] = useSearchParams();
   const directMessageId = searchParams.get('direct-message');
   const channelId = searchParams.get('channel');
@@ -33,9 +30,9 @@ function Chat() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showProflieSettingsModal, setShowProflieSettingsModal] = useState(false);
-  const [showGroupMembersModal, setShowGroupMembersModal] = useState(false);
+  const [showChannelMembersModal, setShowChannelMembersModal] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
-  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [callData, setCallData] = useState(null);
 
   useEffect(() => {
@@ -63,9 +60,9 @@ function Chat() {
     setShowUserMenu(state.current.context.showUserMenu);
     setShowUserProfile(state.current.context.showUserProfile.state);
     setShowProflieSettingsModal(state.current.context.showProfileSettingsModal);
-    setShowGroupMembersModal(state.current.context.showGroupMembersModal.state);
+    setShowChannelMembersModal(state.current.context.showChannelMembersModal.state);
     setShowCallModal(state.current.context.showCallModal);
-    setShowCreateGroupModal(state.current.context.showCreateGroupModal);
+    setShowCreateChannelModal(state.current.context.showCreateChannelModal);
   };
   store.subscribe(handleChange);
 
@@ -74,15 +71,15 @@ function Chat() {
       <div className={cx('wrapper')}>
         {showProflieSettingsModal && <ProflieSettingsModal />}
         {showCallModal && <CallModal data={callData} />}
-        {showGroupMembersModal && <GroupMembersModal id={channelId} />}
+        {showChannelMembersModal && <GroupMembersModal id={channelId} />}
         {showUserMenu && <UserMenu />}
-        {showCreateGroupModal && <CreateGroupModal />}
+        {showCreateChannelModal && <CreateChannelModal />}
         <Header />
         <div className={cx('container')}>
           <Sidebar />
           <div className={cx('content')}>
             {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
-            {!directMessageId && channelId && <RoomMessage roomMessageId={channelId} />}
+            {!directMessageId && channelId && <ChannelMessage ChannelMessageId={channelId} />}
             {!directMessageId && !channelId && <People />}
           </div>
           {showUserProfile && <UserProfile />}

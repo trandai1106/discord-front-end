@@ -4,19 +4,19 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 
-import styles from './CreateGroupModal.module.scss';
+import styles from './CreateChannelModal.module.scss';
 import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
-import chatRoomAPI from '../../api/chatRoomAPI';
+import channelAPI from '../../api/channelAPI';
 
 const cx = classNames.bind(styles);
 
-function CreateGroupModal() {
+function CreateChannelModal() {
   const [name, setName] = useState('');
   const [cookies] = useCookies();
 
   const handleClose = () => {
-    store.dispatch(Actions.showCreateGroupModal(false));
+    store.dispatch(Actions.showCreateChannelModal(false));
   };
 
   const handleSubmit = async () => {
@@ -25,13 +25,13 @@ function CreateGroupModal() {
       return;
     }
 
-    const res = await chatRoomAPI.createGroup({
+    const res = await channelAPI.createChannel({
       admin: cookies.id,
       name: name,
     });
     console.log(res);
     if (res.status) {
-      store.dispatch(Actions.showCreateGroupModal(false));
+      store.dispatch(Actions.showCreateChannelModal(false));
     } else {
       alert(res.message);
     }
@@ -64,4 +64,4 @@ function CreateGroupModal() {
   );
 }
 
-export default CreateGroupModal;
+export default CreateChannelModal;

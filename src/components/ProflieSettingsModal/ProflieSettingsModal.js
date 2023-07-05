@@ -2,15 +2,11 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 
-import styles from "./ProflieSettingsModal.module.scss";
-import * as Actions from "../../store/actions/index";
+import styles from './ProflieSettingsModal.module.scss';
+import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
 import userAPI from '../../api/userAPI';
-import authAPI from '../../api/authAPI';
-
 
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
@@ -20,12 +16,9 @@ function ProflieSettingsModal() {
   const [name, setName] = useState(myUser.name);
   const [previewAvatar, setPreviewAvatar] = useState(avatarBaseUrl + myUser.avatar);
   const [avatar, setAvatar] = useState(null);
-  const [cookies] = useCookies();
 
   const handleClose = () => {
-    store.dispatch(
-      Actions.showProfileSettingsModal(false)
-    );
+    store.dispatch(Actions.showProfileSettingsModal(false));
   };
 
   const handleNameChange = (e) => {
@@ -33,27 +26,25 @@ function ProflieSettingsModal() {
   };
 
   const onSubmit = async () => {
-    if (name !== "" && name !== myUser.name) {
+    if (name !== '' && name !== myUser.name) {
       const res = await userAPI.upLoadUserInfo({
-        id: myUser.id,
+        userId: myUser.id,
         data: {
           name: name,
-        }
+        },
       });
       console.log(res);
     }
 
     if (avatar !== null) {
       const res = await userAPI.upLoadUserAvatar({
-        id: myUser.id,
-        data: avatar
+        userId: myUser.id,
+        data: avatar,
       });
       console.log(res);
     }
 
-    store.dispatch(
-      Actions.showProfileSettingsModal(false)
-    );
+    store.dispatch(Actions.showProfileSettingsModal(false));
   };
 
   const handleChangePreviewAvatar = (e) => {
@@ -64,19 +55,19 @@ function ProflieSettingsModal() {
   };
 
   return (
-    <div className={cx("overlay")}>
-      <div className={cx("inner")}>
-        <div className={cx("container")}>
-          <div className={cx("header")}>
-            <div className={cx("header__title")}>Account settings</div>
+    <div className={cx('overlay')}>
+      <div className={cx('inner')}>
+        <div className={cx('container')}>
+          <div className={cx('header')}>
+            <div className={cx('header__title')}>Account settings</div>
             <div onClick={handleClose} className={cx('close-icon')}>
               <FontAwesomeIcon icon={faXmark} />
             </div>
           </div>
-          <div className={cx("content")}>
-            <div className={cx("avatar")}>
+          <div className={cx('content')}>
+            <div className={cx('avatar')}>
               <img src={previewAvatar} alt="avatar"></img>
-              <div className={cx("upload", "btn")}>
+              <div className={cx('upload', 'btn')}>
                 <input
                   name="avatar"
                   type="file"
@@ -85,11 +76,10 @@ function ProflieSettingsModal() {
                 ></input>
                 Upload Photo
               </div>
-
             </div>
-            <div className={cx("actions")}>
-              <div className={cx("action-item")}>
-                <div className={cx("title")}>Name</div>
+            <div className={cx('actions')}>
+              <div className={cx('action-item')}>
+                <div className={cx('title')}>Name</div>
                 <input value={name} onChange={handleNameChange}></input>
               </div>
               {/* <div className="password">Change Password</div>
@@ -99,14 +89,18 @@ function ProflieSettingsModal() {
               </div> */}
             </div>
           </div>
-          <div className={cx("footer")}>
-            <div className={cx("btn")} onClick={handleClose}>Cancel</div>
-            <div className={cx("btn", "primary")} onClick={onSubmit}>Save changes</div>
+          <div className={cx('footer')}>
+            <div className={cx('btn')} onClick={handleClose}>
+              Cancel
+            </div>
+            <div className={cx('btn', 'primary')} onClick={onSubmit}>
+              Save changes
+            </div>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
-};
+}
 
 export default ProflieSettingsModal;

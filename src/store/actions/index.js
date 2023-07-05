@@ -42,16 +42,16 @@ export const showCallModal = (show) => {
   };
 };
 
-export const showGroupMembersModal = ({ state, groupId }) => {
+export const showChannelMembersModal = ({ state, channelId }) => {
   return {
-    type: Types.SHOW_GROUP_MEMBERS_MODAL,
-    payload: { state, groupId },
+    type: Types.SHOW_CHANNEL_MEMBERS_MODAL,
+    payload: { state, channelId },
   };
 };
 
-export const showCreateGroupModal = (show) => {
+export const showCreateChannelModal = (show) => {
   return {
-    type: Types.SHOW_CREATE_GROUP_MODAL,
+    type: Types.SHOW_CREATE_CHANNEL_MODAL,
     payload: show,
   };
 };

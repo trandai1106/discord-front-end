@@ -21,13 +21,13 @@ function People() {
   useEffect(() => {
     const getAllUsers = async () => {
       const res = await userAPI.getAllUsers();
-      setUsers(res.data.users);
+      setUsers(res.data);
     };
 
     const getUserByName = async (query) => {
       const res = await userAPI.searchUserByName(query);
-      console.log(res.data.users);
-      setUsers(res.data.users);
+      console.log(res.data);
+      setUsers(res.data);
     };
 
     setQuery(searchParams.get('q'));

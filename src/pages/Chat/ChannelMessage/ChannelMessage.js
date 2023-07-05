@@ -6,26 +6,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faPhone, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import ScrollableFeed from 'react-scrollable-feed';
 import { Spin } from 'antd';
-import uuid4 from "uuid4";
+import uuid4 from 'uuid4';
 
-import styles from './RoomMessage.module.scss';
+import styles from './ChannelMessage.module.scss';
 import Message from '../../../components/Message/Message';
 import userAPI from '../../../api/userAPI';
-import chatRoomAPI from '../../../api/chatRoomAPI';
+import channelAPI from '../../../api/channelAPI';
 import socket from '../../../socket';
 import store from '../../../store/store';
-import chatAPI from '../../../api/chatAPI';
-import * as Actions from "../../../store/actions/index";
+import channelMessageAPI from '../../../api/channelMessageAPI';
+import * as Actions from '../../../store/actions/index';
 
 const cx = classNames.bind(styles);
 const baseUrl = process.env.REACT_APP_SERVER_URL;
 
-function RoomMessage({ roomMessageId }) {
+function ChannelMessage({ ChannelMessageId }) {
   const myUser = store.getState().auth.user;
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [room, setRoom] = useState();
+  const [channel, setChannel] = useState();
   const [cookies] = useCookies();
   const sendersInfo = useRef({ length: 0 });
   const messagesEnd = useRef();
@@ -37,7 +37,7 @@ function RoomMessage({ roomMessageId }) {
     setShowActions(false);
 
     const handleMessage = (data) => {
-      if (roomMessageId === data.room_id) {
+      if (ChannelMessageId === data.room_id) {
         const msg = {
           id: data._id,
           from_id: data.from_id,
@@ -46,34 +46,34 @@ function RoomMessage({ roomMessageId }) {
           room_id: data.room_id,
         };
 
-        if (data.room_id === roomMessageId) {
+        if (data.room_id === ChannelMessageId) {
           setMessages((oldMsgs) => [...oldMsgs, msg]);
         }
       }
-    }
+    };
 
-    socket.on('s_roomMessage', handleMessage);
+    socket.on('s_ChannelMessage', handleMessage);
 
-    socket.on("deleteRoomMessage", (data) => {
+    socket.on('deleteChannelMessage', (data) => {
       console.log(data);
-      setMessages(oldMsgs => oldMsgs.filter(msg => msg.id !== data.msg_id));
+      setMessages((oldMsgs) => oldMsgs.filter((msg) => msg.id !== data.msg_id));
     });
 
     return () => {
-      socket.off("s_roomMessage", handleMessage);
+      socket.off('s_ChannelMessage', handleMessage);
     };
-  }, [roomMessageId]);
+  }, [ChannelMessageId]);
 
   const getMessageHistory = async () => {
     setIsLoading(true);
 
-    const roomRes = await chatRoomAPI.getRoom(roomMessageId);
+    const roomRes = await channelAPI.getChannel(ChannelMessageId);
     console.log(roomRes);
     if (roomRes) {
-      setRoom(roomRes.data.room);
+      setChannel(roomRes.data);
     }
 
-    const historyChat = await chatRoomAPI.getMessages(roomMessageId);
+    const historyChat = await channelMessageAPI.getMessages(ChannelMessageId);
     if (historyChat) {
       if (historyChat.data) {
         const historyMessages = historyChat.data.messages;
@@ -81,7 +81,7 @@ function RoomMessage({ roomMessageId }) {
           const msg = {
             id: historyMessages[i]._id,
             from_id: historyMessages[i].from_id,
-            room_id: historyMessages[i].roomMessageId,
+            room_id: historyMessages[i].ChannelMessageId,
             content: historyMessages[i].message,
             created_at: historyMessages[i].created_at,
           };
@@ -101,8 +101,8 @@ function RoomMessage({ roomMessageId }) {
   const getUserInfo = async (id) => {
     const res = await userAPI.getUserInfo(id);
     return {
-      username: res.data.user.name,
-      avatar: baseUrl + res.data.user.avatar,
+      username: res.data.name,
+      avatar: baseUrl + res.data.avatar,
     };
   };
 
@@ -111,12 +111,12 @@ function RoomMessage({ roomMessageId }) {
     if (input !== null && input !== '') {
       const msg = {
         from_id: cookies.id,
-        room_id: roomMessageId,
+        room_id: ChannelMessageId,
         content: input,
         access_token: cookies.access_token,
         created_at: Date.now(),
       };
-      socket.emit('c_roomMessage', msg);
+      socket.emit('c_ChannelMessage', msg);
       setInput('');
     }
   };
@@ -124,64 +124,67 @@ function RoomMessage({ roomMessageId }) {
   const makeVideoCall = () => {
     const msg = {
       from_id: myUser.id,
-      room_id: roomMessageId,
-      content: "Made a new call",
+      room_id: ChannelMessageId,
+      content: 'Made a new call',
       access_token: cookies.access_token,
       created_at: Date.now(),
     };
-    socket.emit("c_roomMessage", msg);
+    socket.emit('c_ChannelMessage', msg);
 
     const callId = uuid4().toString();
-    socket.emit("roomCall", {
+    socket.emit('roomCall', {
       call_id: callId,
       from_id: myUser.id,
-      room_id: roomMessageId,
-      from_name: room.name,
+      room_id: ChannelMessageId,
+      from_name: channel.name,
     });
-    window.open(baseUrl + "/call/" + callId, '_blank', '_self');
+    window.open(baseUrl + '/call/' + callId, '_blank', '_self');
   };
 
   const handleShowActions = () => {
-    console.log(showActions);
     setShowActions(!showActions);
   };
 
-  const handleShowGroupMembersModal = () => {
-    store.dispatch(Actions.showGroupMembersModal({
-      state: true,
-      groupId: roomMessageId
-    }));
-  }
+  const handleShowChannelMembersModal = () => {
+    store.dispatch(
+      Actions.showChannelMembersModal({
+        state: true,
+        channelId: ChannelMessageId,
+      }),
+    );
+  };
 
   const renderActions = () => {
     return (
-      <div className={cx("actions-container")}>
-        <div className={cx("item")} onClick={handleShowGroupMembersModal}>Members</div>
-        <div className={cx("item")}>Leave chat</div>
+      <div className={cx('actions-container')}>
+        <div className={cx('item')} onClick={handleShowChannelMembersModal}>
+          Members
+        </div>
+        <div className={cx('item')}>Leave chat</div>
       </div>
     );
   };
 
   const deleteMessage = async (id) => {
-    const res = await chatAPI.deleteRoomMessage(id);
+    const res = await channelMessageAPI.deleteChannelMessage(id);
     if (res.status === 1) {
-      setMessages(oldMsgs => oldMsgs.filter(msg => msg.id !== id));
-      socket.emit("deleteRoomMessage", ({ from_id: cookies.id, room_id: roomMessageId, msg_id: id }));
+      setMessages((oldMsgs) => oldMsgs.filter((msg) => msg.id !== id));
+      socket.emit('deleteChannelMessage', { from_id: cookies.id, room_id: ChannelMessageId, msg_id: id });
     }
   };
 
   return (
     <div className={cx('wrapper')}>
       <div className={cx('main')}>
-        <div className={cx("channel-header")}>
-          <div className={cx("channel-name")}>
-            {room ? room.name : ""}
-            <div className={cx("action")} onClick={handleShowActions} >
+        <div className={cx('channel-header')}>
+          <div className={cx('channel-name')}>
+            {channel ? channel.name : ''}
+            <div className={cx('action')} onClick={handleShowActions}>
               <FontAwesomeIcon icon={showActions ? faChevronUp : faChevronDown} />
               {showActions && renderActions()}
             </div>
           </div>
-          <div className={cx("call-icon")} onClick={makeVideoCall}>
+          <div className={cx('call-icon')} onClick={makeVideoCall}>
             <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
           </div>
         </div>
@@ -193,7 +196,7 @@ function RoomMessage({ roomMessageId }) {
           ) : (
             <>
               {messages.length === 0 ? (
-                <h3 className={cx('zero-message')}>Start chat with others in {room.name}</h3>
+                <h3 className={cx('zero-message')}>Start chat with others in {channel.name}</h3>
               ) : (
                 <>
                   {messages.map(
@@ -222,7 +225,7 @@ function RoomMessage({ roomMessageId }) {
               className={cx('input')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Send a message to ${room ? room.name : ''}`}
+              placeholder={`Send a message to ${channel ? channel.name : ''}`}
             />
             <FontAwesomeIcon className={cx('icon')} type="submit" icon={faPaperPlane} onClick={sendMessage} />
           </div>
@@ -232,4 +235,4 @@ function RoomMessage({ roomMessageId }) {
   );
 }
 
-export default RoomMessage;
+export default ChannelMessage;

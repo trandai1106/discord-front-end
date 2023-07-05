@@ -8,11 +8,11 @@ export const initialState = {
   },
   showProfileSettingsModal: false,
   showCallModal: false,
-  showGroupMembersModal: {
+  showChannelMembersModal: {
     state: false,
-    groupId: '',
+    channelId: '',
   },
-  showCreateGroupModal: false,
+  showCreateChannelModal: false,
 };
 
 const context = (state = initialState, action) => {
@@ -37,15 +37,15 @@ const context = (state = initialState, action) => {
         ...state,
         showCallModal: action.payload,
       };
-    case Types.SHOW_GROUP_MEMBERS_MODAL:
+    case Types.SHOW_CHANNEL_MEMBERS_MODAL:
       return {
         ...state,
-        showGroupMembersModal: action.payload,
+        showChannelMembersModal: action.payload,
       };
-    case Types.SHOW_CREATE_GROUP_MODAL:
+    case Types.SHOW_CREATE_CHANNEL_MODAL:
       return {
         ...state,
-        showCreateGroupModal: action.payload,
+        showCreateChannelModal: action.payload,
       };
     default:
       return state;

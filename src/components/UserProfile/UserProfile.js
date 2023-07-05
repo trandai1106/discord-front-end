@@ -39,9 +39,7 @@ function UserProfile() {
   };
 
   const handleUserEdit = () => {
-    store.dispatch(
-      Actions.showProfileSettingsModal(true)
-    );
+    store.dispatch(Actions.showProfileSettingsModal(true));
   };
 
   const handleChange = () => {
@@ -57,16 +55,16 @@ function UserProfile() {
         authAPI.logout();
         navigate('login');
       }
-      setName(res.data.user.name);
-      setAvatar(res.data.user.avatar);
-      setEmail(res.data.user.email);
-      socket.emit("checkOnlineUserList", cookies.id);
+      setName(res.data.name);
+      setAvatar(res.data.avatar);
+      setEmail(res.data.email);
+      socket.emit('checkOnlineUserList', cookies.id);
     };
     if (userId !== '') {
       getUserInfo();
     }
 
-    socket.on("updateUserOnlineList", (data) => {
+    socket.on('updateUserOnlineList', (data) => {
       if (data.includes(userId)) {
         setIsOnline(true);
       } else {
@@ -131,7 +129,7 @@ function UserProfile() {
             ) : (
               <>
                 <Link to={`?direct-message=${userId}`} className={cx('chat')}>
-                  Chat with {name} {isOnline ? " - online" : " - offline"}
+                  Chat with {name} {isOnline ? ' - online' : ' - offline'}
                 </Link>
               </>
             )}

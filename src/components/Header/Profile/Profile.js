@@ -24,7 +24,7 @@ function Profile() {
         authAPI.logout();
         navigate('login');
       }
-      setAvatar(res.data.user.avatar);
+      setAvatar(res.data.avatar);
     };
     getUserInfo();
   }, []);

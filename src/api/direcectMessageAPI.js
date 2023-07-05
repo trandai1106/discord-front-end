@@ -1,11 +1,9 @@
 import axiosClient from './axiosClient';
-import * as Actions from './../store/actions';
-import { store } from './../index';
 
-const chatAPI = {
+const direcectMessageAPI = {
   getMessages: async (to_id) => {
     try {
-      const url = '/chat/direct-message/to/' + to_id;
+      const url = '/chat/direct/to/' + to_id;
       const response = await axiosClient.get(url);
       return response.data;
     } catch (err) {
@@ -14,25 +12,16 @@ const chatAPI = {
   },
   getContacts: async () => {
     try {
-      const url = `/chat/direct-message/contacted`;
+      const url = `/chat/direct/contacted`;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  deleteDirectMessage: async (id) => {
+  deleteMessage: async (id) => {
     try {
-      const url = `/chat/direct-message/delete/${id}`;
-      const res = await axiosClient.delete(url);
-      return res.data;
-    } catch (err) {
-      console.log('Error', err);
-    }
-  },
-  deleteRoomMessage: async (id) => {
-    try {
-      const url = `/room/delete/${id}`;
+      const url = `/chat/direct/delete/${id}`;
       const res = await axiosClient.delete(url);
       return res.data;
     } catch (err) {
@@ -41,4 +30,4 @@ const chatAPI = {
   },
 };
 
-export default chatAPI;
+export default direcectMessageAPI;

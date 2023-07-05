@@ -7,8 +7,8 @@ import styles from './Sidebar.module.scss';
 import SidebarNav from './SidebarNav/SidebarNav';
 import ChannelOption from './ChannelOption/ChannelOption';
 import DirectMessageOption from './DirectMessageOption/DirectMessageOption';
-import chatAPI from '../../api/chatAPI';
-import chatRoomAPI from '../../api/chatRoomAPI';
+import direcectMessageAPI from '../../api/direcectMessageAPI';
+import channelAPI from '../../api/channelAPI';
 import socket from '../../socket';
 import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
@@ -22,15 +22,15 @@ function Sidebar() {
   const [width, setWidth] = useState(300);
   const [isResizing, setIsResizing] = useState(false);
   const [directMessages, setDirectMessages] = useState([]);
-  const [rooms, setRooms] = useState([]);
+  const [channels, setChannels] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getSizebarOptions = async () => {
-      const res = await chatAPI.getContacts();
+      const res = await direcectMessageAPI.getContacts();
       setDirectMessages(res.data.contacted_data);
-      const roomRes = await chatRoomAPI.getAllRooms();
-      setRooms(roomRes.data.rooms);
+      const result = await channelAPI.getJoinedChannels();
+      setChannels(result.data);
     };
     getSizebarOptions();
 
@@ -68,8 +68,8 @@ function Sidebar() {
     setIsResizing(false);
   };
 
-  const handleAddGroup = () => {
-    store.dispatch(Actions.showCreateGroupModal(true));
+  const handleAddChannel = () => {
+    store.dispatch(Actions.showCreateChannelModal(true));
   };
 
   return (
@@ -104,10 +104,10 @@ function Sidebar() {
           }}
         />
         {showChannels &&
-          rooms.map((room, index) => {
+          channels.map((room, index) => {
             return <ChannelOption key={index} title={room.name} icon={faHashtag} id={room._id} />;
           })}
-        <div className={cx('add-channel')} onClick={handleAddGroup}>
+        <div className={cx('add-channel')} onClick={handleAddChannel}>
           <FontAwesomeIcon className={cx('add-channel-icon')} icon={faPlus} />
           Add channels
         </div>

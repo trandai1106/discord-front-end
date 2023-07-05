@@ -1,45 +1,36 @@
 import axiosClient from './axiosClient';
 
-const chatRoomAPI = {
-  getAllRooms: async () => {
+const channelChatAPI = {
+  getJoinedChannels: async () => {
     try {
-      const url = '/room';
-      const response = await axiosClient.get(url);
-      return response.data;
-    } catch (err) {
-      console.log('Error', err);
-    }
-  },
-  getRoom: async (roomId) => {
-    try {
-      const url = '/room/information/' + roomId;
-      const response = await axiosClient.get(url);
-      return response.data;
-    } catch (err) {
-      console.log('Error', err);
-    }
-  },
-  getMessages: async (room_id) => {
-    try {
-      const url = '/room/message/' + room_id;
-      const response = await axiosClient.get(url);
-      return response.data;
-    } catch (err) {
-      console.log('Error', err);
-    }
-  },
-  getContacts: async () => {
-    try {
-      const url = `/room/room-message/contacted`;
+      const url = '/channel/joined';
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  createGroup: async (data) => {
+  getAllChannels: async () => {
     try {
-      const url = `/room/create`;
+      const url = '/channel/all';
+      const res = await axiosClient.get(url);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
+  getChannel: async (channelId) => {
+    try {
+      const url = '/channel/information/' + channelId;
+      const res = await axiosClient.get(url);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
+  createChannel: async (data) => {
+    try {
+      const url = `/channel/create`;
       const res = await axiosClient.post(url, data);
       return res.data;
     } catch (err) {
@@ -48,34 +39,34 @@ const chatRoomAPI = {
   },
   getMembers: async (id) => {
     try {
-      const url = `/room/users/members/${id}`;
+      const url = `/channel/members/${id}`;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  searchMembersByName: async ({ groupId, query }) => {
+  searchMembersByName: async ({ channelId, query }) => {
     try {
-      const url = `/room/users/search/members/${groupId}?q=${query}`;
+      const url = `/channel/search/members/${channelId}?q=${query}`;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  getPeopleNotInGroup: async (groupId) => {
+  getPeopleNotInChannel: async (channelId) => {
     try {
-      const url = `/room/users/notmember/${groupId}`;
+      const url = `/channel/notmember/${channelId}`;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  searchPeopleNotInGroupByName: async ({ groupId, query }) => {
+  searchPeopleNotInChannelByName: async ({ channelId, query }) => {
     try {
-      const url = `/room/users/search/notmember/${groupId}?q=${query}`;
+      const url = `/channel/search/notmember/${channelId}?q=${query}`;
       const res = await axiosClient.get(url);
       return res.data;
     } catch (err) {
@@ -84,7 +75,7 @@ const chatRoomAPI = {
   },
   addMember: async ({ channelId, userId }) => {
     try {
-      const url = `/room/users/add/${channelId}`;
+      const url = `/channel/add/${channelId}`;
       const res = await axiosClient.post(url, { userId: userId });
       return res.data;
     } catch (err) {
@@ -93,7 +84,7 @@ const chatRoomAPI = {
   },
   deleteMember: async ({ channelId, userId }) => {
     try {
-      const url = `/room/users/delete/${channelId}`;
+      const url = `/channel/delete/${channelId}`;
       const res = await axiosClient.post(url, { userId: userId });
       return res.data;
     } catch (err) {
@@ -102,4 +93,4 @@ const chatRoomAPI = {
   },
 };
 
-export default chatRoomAPI;
+export default channelChatAPI;

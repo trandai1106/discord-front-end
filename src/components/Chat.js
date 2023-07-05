@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 
 import styles from './Chat.module.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
@@ -16,13 +15,11 @@ import UserProfile from '../../components/UserProfile/UserProfile';
 import AccountSettingsModal from '../../components/AccountSettingsModal/AccountSettingsModal';
 import socket from '../../socket';
 import CallModal from '../../components/CallModal/CallModal';
-import * as Actions from "../../store/actions/index";
+import * as Actions from '../../store/actions/index';
 
 const cx = classNames.bind(styles);
-const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 function Chat() {
-  const [cookies] = useCookies();
   const [searchParams] = useSearchParams();
   const directMessageId = searchParams.get('direct-message');
   const channelId = searchParams.get('channel');
@@ -35,18 +32,18 @@ function Chat() {
   const [callData, setCallData] = useState(null);
 
   useEffect(() => {
-    socket.on("directCall", (data) => {
+    socket.on('directCall', (data) => {
       setCallData({
         ...data,
-        type: "directCall"
+        type: 'directCall',
       });
       store.dispatch(Actions.toggleCallModal(true));
     });
 
-    socket.on("roomCall", (data) => {
+    socket.on('roomCall', (data) => {
       setCallData({
         ...data,
-        type: "roomCall"
+        type: 'roomCall',
       });
       if (data.from_id !== myUser.id) {
         store.dispatch(Actions.toggleCallModal(true));
@@ -81,7 +78,6 @@ function Chat() {
         </div>
       </div>
     </>
-
   );
 }
 

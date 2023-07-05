@@ -6,39 +6,38 @@ import { useState } from 'react';
 import { Spin } from 'antd';
 import { useCookies } from 'react-cookie';
 
-import styles from './GroupMembersModal.module.scss';
+import styles from './ChannelMembersModal.module.scss';
 import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
-// import userAPI from '../../api/userAPI';
-// import authAPI from '../../api/authAPI';
-import chatRoomAPI from '../../api/chatRoomAPI';
+import channelAPI from '../../api/channelAPI';
 
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
 
-function GroupMembersModal() {
+function ChannelMembersModal() {
   const [members, setMembers] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [addMember, setAddMember] = useState(false);
   const [isloading, setIsLoading] = useState(true);
   const [searchMode, setSearchMode] = useState(false);
-  const state = store.getState().context.showGroupMembersModal;
+  const state = store.getState().context.showChannelMembersModal;
   const [adminId, setAdminId] = useState('');
   const [cookies] = useCookies();
 
   useEffect(() => {
-    getMembersInGroup();
+    getMembersInChannel();
     getGroupInfomation();
   }, []);
 
   const getGroupInfomation = async () => {
-    const res = await chatRoomAPI.getRoom(state.groupId);
-    setAdminId(res.data.room.admin);
+    const res = await channelAPI.getChannel(state.channelId);
+    console.log(state.channelId, res);
+    setAdminId(res.data.admin);
   };
 
-  const getMembersInGroup = async () => {
+  const getMembersInChannel = async () => {
     setIsLoading(true);
-    const res = await chatRoomAPI.getMembers(state.groupId);
+    const res = await channelAPI.getMembers(state.channelId);
     if (res.status) {
       console.log(res);
       setMembers(res.data);
@@ -46,9 +45,9 @@ function GroupMembersModal() {
     setIsLoading(false);
   };
 
-  const getPeopleNotInGroup = async () => {
+  const getPeopleNotInChannel = async () => {
     setIsLoading(true);
-    const res = await chatRoomAPI.getPeopleNotInGroup(state.groupId);
+    const res = await channelAPI.getPeopleNotInChannel(state.channelId);
     if (res.status) {
       setMembers(res.data);
     }
@@ -56,10 +55,10 @@ function GroupMembersModal() {
     setIsLoading(false);
   };
 
-  const handleSearchMembersInGroup = async () => {
+  const handleSearchMembersInChannel = async () => {
     setIsLoading(true);
-    const res = await chatRoomAPI.searchMembersByName({
-      groupId: state.groupId,
+    const res = await channelAPI.searchMembersByName({
+      channelId: state.channelId,
       query: searchInput,
     });
     setSearchMode(true);
@@ -67,10 +66,10 @@ function GroupMembersModal() {
     setMembers(res.data);
   };
 
-  const handleSearchPeopleNotInGroup = async () => {
+  const handleSearchPeopleNotInChannel = async () => {
     setIsLoading(true);
-    const res = await chatRoomAPI.searchPeopleNotInGroupByName({
-      groupId: state.groupId,
+    const res = await channelAPI.searchPeopleNotInChannelByName({
+      channelId: state.channelId,
       query: searchInput,
     });
     setSearchMode(true);
@@ -81,18 +80,18 @@ function GroupMembersModal() {
   const toggleAddMember = () => {
     if (!addMember) {
       setAddMember(true);
-      getPeopleNotInGroup();
+      getPeopleNotInChannel();
     } else {
       setAddMember(false);
-      getMembersInGroup();
+      getMembersInChannel();
     }
   };
 
   const handleClose = () => {
     store.dispatch(
-      Actions.showGroupMembersModal({
+      Actions.showChannelMembersModal({
         state: false,
-        groupId: '',
+        channelId: '',
       }),
     );
   };
@@ -105,16 +104,16 @@ function GroupMembersModal() {
       }),
     );
     store.dispatch(
-      Actions.showGroupMembersModal({
+      Actions.showChannelMembersModal({
         state: false,
-        groupId: '',
+        channelId: '',
       }),
     );
   };
 
   const handleAddMember = async (userId) => {
-    const res = await chatRoomAPI.addMember({
-      channelId: state.groupId,
+    const res = await channelAPI.addMember({
+      channelId: state.channelId,
       userId: userId,
     });
     console.log(res);
@@ -124,8 +123,8 @@ function GroupMembersModal() {
   };
 
   const handleDeleteMember = async (userId) => {
-    const res = await chatRoomAPI.deleteMember({
-      channelId: state.groupId,
+    const res = await channelAPI.deleteMember({
+      channelId: state.channelId,
       userId: userId,
     });
     console.log(res);
@@ -170,7 +169,7 @@ function GroupMembersModal() {
                     }}
                     onKeyDown={(e) => {
                       if (e.keyCode === 13) {
-                        handleSearchPeopleNotInGroup();
+                        handleSearchPeopleNotInChannel();
                       }
                     }}
                   ></input>
@@ -187,7 +186,7 @@ function GroupMembersModal() {
                           className={cx('search-back-icon')}
                           icon={faArrowLeft}
                           onClick={() => {
-                            getPeopleNotInGroup();
+                            getPeopleNotInChannel();
                             setSearchMode(false);
                           }}
                         />
@@ -232,7 +231,7 @@ function GroupMembersModal() {
                     }}
                     onKeyDown={(e) => {
                       if (e.keyCode === 13) {
-                        handleSearchMembersInGroup();
+                        handleSearchMembersInChannel();
                       }
                     }}
                   ></input>
@@ -244,7 +243,7 @@ function GroupMembersModal() {
                         className={cx('search-back-icon')}
                         icon={faArrowLeft}
                         onClick={() => {
-                          getMembersInGroup();
+                          getMembersInChannel();
                           setSearchMode(false);
                         }}
                       />
@@ -298,4 +297,4 @@ function GroupMembersModal() {
   );
 }
 
-export default GroupMembersModal;
+export default ChannelMembersModal;
