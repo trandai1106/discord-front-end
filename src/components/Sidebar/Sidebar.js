@@ -28,7 +28,7 @@ function Sidebar() {
   useEffect(() => {
     const getSizebarOptions = async () => {
       const res = await direcectMessageAPI.getContacts();
-      setDirectMessages(res.data.contacted_data);
+      setDirectMessages(res.data);
       const result = await channelAPI.getJoinedChannels();
       setChannels(result.data);
     };

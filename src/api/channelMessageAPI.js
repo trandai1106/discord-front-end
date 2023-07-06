@@ -12,7 +12,7 @@ const channelMessageAPI = {
   },
   deleteMessage: async (id) => {
     try {
-      const url = `/chat/channel/${id}`;
+      const url = `/chat/channel/delete/${id}`;
       const res = await axiosClient.delete(url);
       return res.data;
     } catch (err) {

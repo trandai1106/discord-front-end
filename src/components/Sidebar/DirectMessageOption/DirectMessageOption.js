@@ -26,7 +26,7 @@ function DirectMessageOption({ userId }) {
       setUser(res.data);
     })();
 
-    socket.on('updateUserOnlineList', (data) => {
+    socket.on('update_online_user', (data) => {
       if (data.includes(userId)) {
         setIsOnline(true);
       } else {
@@ -34,7 +34,7 @@ function DirectMessageOption({ userId }) {
       }
     });
 
-    socket.emit('checkOnlineUserList', myUser.id);
+    socket.emit('check_online_user', myUser.id);
     const currentId = searchParams.get('direct-message');
     if (userId === currentId) {
       setNotification(false);

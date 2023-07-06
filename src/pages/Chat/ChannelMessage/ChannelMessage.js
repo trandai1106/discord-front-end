@@ -37,17 +37,22 @@ function ChannelMessage({ ChannelMessageId }) {
     setShowActions(false);
 
     const handleMessage = (data) => {
-      if (ChannelMessageId === data.room_id) {
+      if (ChannelMessageId === data.channel_id) {
         const msg = {
           id: data._id,
           from_id: data.from_id,
           content: data.content,
           created_at: data.created_at,
-          room_id: data.room_id,
+          channel_id: data.channel_id,
         };
 
-        if (data.room_id === ChannelMessageId) {
-          setMessages((oldMsgs) => [...oldMsgs, msg]);
+        if (data.channel_id === ChannelMessageId) {
+          console.log(msg);
+          if (sendersInfo.current.length === 0) {
+            getMessageHistory();
+          } else {
+            setMessages((oldMsgs) => [...oldMsgs, msg]);
+          }
         }
       }
     };
@@ -76,13 +81,13 @@ function ChannelMessage({ ChannelMessageId }) {
     const historyChat = await channelMessageAPI.getMessages(ChannelMessageId);
     if (historyChat) {
       if (historyChat.data) {
-        const historyMessages = historyChat.data.messages;
+        const historyMessages = historyChat.data;
         for (let i = 0; i < historyMessages.length; i++) {
           const msg = {
             id: historyMessages[i]._id,
             from_id: historyMessages[i].from_id,
-            room_id: historyMessages[i].ChannelMessageId,
-            content: historyMessages[i].message,
+            channel_id: historyMessages[i].channel_id,
+            content: historyMessages[i].content,
             created_at: historyMessages[i].created_at,
           };
           setMessages((oldMsgs) => [...oldMsgs, msg]);
@@ -111,7 +116,7 @@ function ChannelMessage({ ChannelMessageId }) {
     if (input !== null && input !== '') {
       const msg = {
         from_id: cookies.id,
-        room_id: ChannelMessageId,
+        channel_id: ChannelMessageId,
         content: input,
         access_token: cookies.access_token,
         created_at: Date.now(),
@@ -124,7 +129,7 @@ function ChannelMessage({ ChannelMessageId }) {
   const makeVideoCall = () => {
     const msg = {
       from_id: myUser.id,
-      room_id: ChannelMessageId,
+      channel_id: ChannelMessageId,
       content: 'Made a new call',
       access_token: cookies.access_token,
       created_at: Date.now(),
@@ -135,7 +140,7 @@ function ChannelMessage({ ChannelMessageId }) {
     socket.emit('roomCall', {
       call_id: callId,
       from_id: myUser.id,
-      room_id: ChannelMessageId,
+      channel_id: ChannelMessageId,
       from_name: channel.name,
     });
     window.open(baseUrl + '/call/' + callId, '_blank', '_self');
@@ -166,10 +171,10 @@ function ChannelMessage({ ChannelMessageId }) {
   };
 
   const deleteMessage = async (id) => {
-    const res = await channelMessageAPI.deleteChannelMessage(id);
+    const res = await channelMessageAPI.deleteMessage(id);
     if (res.status === 1) {
       setMessages((oldMsgs) => oldMsgs.filter((msg) => msg.id !== id));
-      socket.emit('deleteChannelMessage', { from_id: cookies.id, room_id: ChannelMessageId, msg_id: id });
+      socket.emit('deleteChannelMessage', { from_id: cookies.id, channel_id: ChannelMessageId, msg_id: id });
     }
   };
 

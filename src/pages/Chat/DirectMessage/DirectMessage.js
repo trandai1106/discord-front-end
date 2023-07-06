@@ -41,12 +41,13 @@ function DirectMessage({ directMessageId }) {
       const msg = {
         id: data._id,
         from_id: data.from_id,
+        to_id: data.to_id,
         content: data.content,
         created_at: new Date(),
-        directMessageId: directMessageId,
       };
 
-      if (data.from_id === directMessageId || data.from_id === cookies.id) {
+      if (msg.from_id === directMessageId || msg.from_id === cookies.id) {
+        console.log(msg);
         if (sendersInfo.current.length === 0) {
           getMessageHistory();
         } else {
@@ -81,15 +82,16 @@ function DirectMessage({ directMessageId }) {
     const historyChat = await direcectMessageAPI.getMessages(directMessageId);
     if (historyChat) {
       if (historyChat.data) {
-        const historyMessages = historyChat.data.messages;
+        const historyMessages = historyChat.data;
         for (let i = 0; i < historyMessages.length; i++) {
           const msg = {
             id: historyMessages[i]._id,
             from_id: historyMessages[i].from_id,
-            directMessageId: historyMessages[i].directMessageId,
-            content: historyMessages[i].message,
+            to_id: historyMessages[i].to_id,
+            content: historyMessages[i].content,
             created_at: historyMessages[i].created_at,
           };
+
           setMessages((oldMsgs) => [...oldMsgs, msg]);
 
           if (sendersInfo.current[msg.from_id] === undefined) {

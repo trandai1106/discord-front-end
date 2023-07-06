@@ -58,13 +58,13 @@ function UserProfile() {
       setName(res.data.name);
       setAvatar(res.data.avatar);
       setEmail(res.data.email);
-      socket.emit('checkOnlineUserList', cookies.id);
+      socket.emit('check_online_user', cookies.id);
     };
     if (userId !== '') {
       getUserInfo();
     }
 
-    socket.on('updateUserOnlineList', (data) => {
+    socket.on('update_online_user', (data) => {
       if (data.includes(userId)) {
         setIsOnline(true);
       } else {
