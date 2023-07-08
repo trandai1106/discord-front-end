@@ -33,7 +33,7 @@ function CreateChannelModal() {
       private: isPrivate,
     });
     console.log(res);
-    socket.emit('update_channel_members');
+    socket.emit('update_channel');
 
     if (res.status) {
       store.dispatch(Actions.showCreateChannelModal(false));
