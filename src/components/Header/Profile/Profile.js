@@ -22,7 +22,7 @@ function Profile() {
       const res = await userAPI.getUserInfo(cookies.id);
       if (res.status === 0) {
         authAPI.logout();
-        navigate('login');
+        navigate('/login');
       }
       setAvatar(res.data.avatar);
     };

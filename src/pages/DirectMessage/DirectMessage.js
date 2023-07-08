@@ -96,11 +96,7 @@ function DirectMessage() {
   const getMessageHistory = async () => {
     setIsLoading(true);
     const res = await userAPI.getUserInfo(directId);
-    if (res.status === 0) {
-      authAPI.logout();
-      navigate('login');
-    }
-    if (res) {
+    if (res.status) {
       setPartner(res.data);
     }
 
@@ -210,7 +206,7 @@ function DirectMessage() {
             <div className={cx('channel-name')}>
               {partner ? partner.name : ''}
               <div className={cx('action')} onClick={handleShowActions}>
-                <FontAwesomeIcon icon={showActions ? faChevronDown : faChevronUp} />
+                <FontAwesomeIcon icon={faChevronDown} />
                 {showActions && renderActions()}
               </div>
             </div>

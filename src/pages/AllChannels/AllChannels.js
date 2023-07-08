@@ -4,6 +4,7 @@ import { useSearchParams, useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { faHashtag, faLock, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 import styles from './AllChannels.module.scss';
 import channelAPI from '../../api/channelAPI';
@@ -72,7 +73,13 @@ function AllChannels() {
                 <div className={cx('private')}>
                   <FontAwesomeIcon icon={channel.private ? faLock : faHashtag} />
                 </div>
-                <div className={cx('name')}>{channel.name}</div>
+                {channel.members.includes(cookies.id) ? (
+                  <Link to={`/channel-message/${channel._id}`} className={cx('name')}>
+                    {channel.name}
+                  </Link>
+                ) : (
+                  <div className={cx('name')}>{channel.name}</div>
+                )}
               </div>
               <div className={cx('row')}>
                 <div className={cx('members')}>{channel.members.length + ' members'}</div>

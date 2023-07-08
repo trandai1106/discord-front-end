@@ -3,11 +3,11 @@ import classNames from 'classnames/bind';
 import { useEffect, useState, useRef } from 'react';
 import { useCookies } from 'react-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faPhone, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPhone, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import ScrollableFeed from 'react-scrollable-feed';
 import { Spin } from 'antd';
 import uuid4 from 'uuid4';
-import { useSearchParams, useParams, useLocation } from 'react-router-dom';
+import { useSearchParams, useParams, useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './ChannelMessage.module.scss';
 import Message from '../../components/Message/Message';
@@ -35,6 +35,7 @@ function ChannelMessage() {
   const { channelId } = useParams();
   const [query, setQuery] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     init();
@@ -111,8 +112,12 @@ function ChannelMessage() {
       setChannel(channelRes.data);
     }
 
-    const historyChat = await channelMessageAPI.getMessages(channelId);
-    formatMessages(historyChat);
+    if (channelRes.data.members.includes(cookies.id)) {
+      const historyChat = await channelMessageAPI.getMessages(channelId);
+      formatMessages(historyChat);
+    } else {
+      setChannel(null);
+    }
   };
 
   const formatMessages = async (historyChat) => {
@@ -205,6 +210,31 @@ function ChannelMessage() {
     );
   };
 
+  const handleDeleteChannel = async () => {
+    const isDelete = window.confirm('Are you sure you want to delete this channel');
+    if (isDelete) {
+      const res = await channelAPI.deleteChannel(channelId);
+      if (res.status === 1) {
+        socket.emit('update_channel');
+        navigate('/allchannels');
+      }
+    }
+  };
+
+  const handleLeaveChannel = async () => {
+    const isLeave = window.confirm('Are you sure you want to delete this channel');
+    if (isLeave) {
+      const res = await channelAPI.deleteMember({
+        channelId: channelId,
+        userId: cookies.id,
+      });
+      if (res.status === 1) {
+        socket.emit('update_channel');
+        navigate('/allchannels');
+      }
+    }
+  };
+
   const renderActions = () => {
     return (
       <div className={cx('actions-container')}>
@@ -217,11 +247,11 @@ function ChannelMessage() {
           </div>
         )}
         {channel.admin === cookies.id ? (
-          <div className={cx('item')} onClick={handleShowChannelSettingsModal} style={{ color: 'red' }}>
+          <div className={cx('item')} onClick={handleDeleteChannel} style={{ color: 'red' }}>
             Delete channel
           </div>
         ) : (
-          <div className={cx('item')} style={{ color: 'red' }}>
+          <div className={cx('item')} onClick={handleLeaveChannel} style={{ color: 'red' }}>
             Leave chat
           </div>
         )}
@@ -245,7 +275,7 @@ function ChannelMessage() {
             <div className={cx('channel-name')}>
               {channel ? channel.name : ''}
               <div className={cx('action')} onClick={handleShowActions}>
-                <FontAwesomeIcon icon={showActions ? faChevronDown : faChevronUp} />
+                <FontAwesomeIcon icon={faChevronDown} />
                 {showActions && renderActions()}
               </div>
             </div>

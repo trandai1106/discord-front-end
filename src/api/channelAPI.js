@@ -48,17 +48,19 @@ const channelChatAPI = {
   },
   updateChannel: async (data) => {
     try {
-      const url = `/channel/update`;
+      const url = `/channel/admin/update`;
       const res = await axiosClient.put(url, data);
       return res.data;
     } catch (err) {
       console.log('Error', err);
     }
   },
-  deleteChannel: async (data) => {
+  deleteChannel: async (channelId) => {
     try {
-      const url = `/channel/delete`;
-      const res = await axiosClient.post(url, data);
+      const url = `/channel/admin/delete`;
+      const res = await axiosClient.post(url, {
+        channelId: channelId,
+      });
       return res.data;
     } catch (err) {
       console.log('Error', err);
