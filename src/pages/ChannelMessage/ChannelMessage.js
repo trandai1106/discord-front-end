@@ -179,7 +179,7 @@ function ChannelMessage() {
     socket.emit('c_ChannelMessage', msg);
 
     const callId = uuid4().toString();
-    socket.emit('channelCall', {
+    socket.emit('channel_call', {
       call_id: callId,
       from_id: myUser.id,
       channel_id: channelId,

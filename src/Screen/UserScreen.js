@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 import styles from './UserScreen.module.scss';
 import Sidebar from '../components/Sidebar/Sidebar';
@@ -14,7 +15,7 @@ import ChannelSettingsModal from '../components/ChannelSettingsModal/ChannelSett
 import CallModal from '../components/CallModal/CallModal';
 import * as Actions from '../store/actions/index';
 import store from '../store/store';
-
+import channelAPI from '../api/channelAPI';
 import socket from '../socket';
 
 const cx = classNames.bind(styles);
@@ -30,20 +31,23 @@ function UserScreen({ children }) {
   const [showCallModal, setShowCallModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [callData, setCallData] = useState(null);
+  const [cookies] = useCookies();
 
   useEffect(() => {
-    socket.on('directCall', (data) => {
-      setCallData({
-        ...data,
-        type: 'directCall',
-      });
-      store.dispatch(Actions.showCallModal(true));
+    socket.on('direct_call', (data) => {
+      if (data.to_id === cookies.id) {
+        setCallData({
+          ...data,
+          type: 'direct_call',
+        });
+        store.dispatch(Actions.showCallModal(true));
+      }
     });
 
-    socket.on('roomCall', (data) => {
+    socket.on('channel_call', async (data) => {
       setCallData({
         ...data,
-        type: 'roomCall',
+        type: 'channel_call',
       });
       if (data.from_id !== myUser.id) {
         store.dispatch(Actions.showCallModal(true));

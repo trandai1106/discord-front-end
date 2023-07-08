@@ -164,7 +164,7 @@ function DirectMessage() {
     socket.emit('c_directMessage', msg);
 
     const callId = uuid4().toString();
-    socket.emit('directCall', {
+    socket.emit('direct_call', {
       call_id: callId,
       from_id: cookies.id,
       to_id: directId,

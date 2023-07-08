@@ -38,7 +38,7 @@ function DirectMessageOption({ userId }) {
 
     socket.emit('check_online_user', cookies.id);
 
-    const currentId = searchParams.get('direct-message');
+    const currentId = location.pathname.split('/direct-message/')[1];
     if (userId === currentId) {
       setNotification(false);
     } else {

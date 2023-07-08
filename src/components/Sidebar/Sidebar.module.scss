@@ -4,6 +4,12 @@
   background-color: var(--secondary);
   color: var(--white);
   position: relative;
+  overflow: auto;
+  padding-bottom: 60px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .title {

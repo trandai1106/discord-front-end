@@ -34,14 +34,15 @@ function ProflieSettingsModal() {
         },
       });
       console.log(res);
+      store.dispatch(Actions.saveUserToRedux(res.data));
     }
 
     if (avatar !== null) {
-      const res = await userAPI.upLoadUserAvatar({
+      await userAPI.upLoadUserAvatar({
         userId: myUser.id,
         data: avatar,
       });
-      console.log(res);
+      window.location.reload();
     }
 
     store.dispatch(Actions.showProfileSettingsModal(false));
