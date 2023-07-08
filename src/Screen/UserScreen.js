@@ -1,36 +1,32 @@
 /* eslint-disable no-unused-expressions */
 import classNames from 'classnames/bind';
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 
-import styles from './Chat.module.scss';
-import Sidebar from '../../components/Sidebar/Sidebar';
-import Header from '../../components/Header/Header';
-import DirectMessage from './DirectMessage/DirectMessage';
-import ChannelMessage from './ChannelMessage/ChannelMessage';
-import People from './People/People';
-import store from '../../store/store';
-import UserMenu from '../../components/UserMenu/UserMenu';
-import UserProfile from '../../components/UserProfile/UserProfile';
-import ProflieSettingsModal from '../../components/ProflieSettingsModal/ProflieSettingsModal';
-import socket from '../../socket';
-import CallModal from '../../components/CallModal/CallModal';
-import * as Actions from '../../store/actions/index';
-import GroupMembersModal from '../../components/ChannelMembersModal/ChannelMembersModal';
-import CreateChannelModal from '../../components/CreateChannelModal/CreateChannelModal';
+import styles from './UserScreen.module.scss';
+import Sidebar from '../components/Sidebar/Sidebar';
+import Header from '../components/Header/Header';
+import UserMenu from '../components/UserMenu/UserMenu';
+import UserProfile from '../components/UserProfile/UserProfile';
+import ProflieSettingsModal from '../components/ProflieSettingsModal/ProflieSettingsModal';
+import ChannelMembersModal from '../components/ChannelMembersModal/ChannelMembersModal';
+import CreateChannelModal from '../components/CreateChannelModal/CreateChannelModal';
+import ChannelSettingsModal from '../components/ChannelSettingsModal/ChannelSettingsModal';
+import CallModal from '../components/CallModal/CallModal';
+import * as Actions from '../store/actions/index';
+import store from '../store/store';
+
+import socket from '../socket';
 
 const cx = classNames.bind(styles);
 
-function Chat() {
-  const [searchParams] = useSearchParams();
-  const directMessageId = searchParams.get('direct-message');
-  const channelId = searchParams.get('channel');
+function UserScreen({ children }) {
   const myUser = store.getState().auth.user;
   const state = useRef(store.getState());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showProflieSettingsModal, setShowProflieSettingsModal] = useState(false);
   const [showChannelMembersModal, setShowChannelMembersModal] = useState(false);
+  const [showChannelSettingsModal, setShowChannelSettingsModal] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [callData, setCallData] = useState(null);
@@ -61,6 +57,7 @@ function Chat() {
     setShowUserProfile(state.current.context.showUserProfile.state);
     setShowProflieSettingsModal(state.current.context.showProfileSettingsModal);
     setShowChannelMembersModal(state.current.context.showChannelMembersModal.state);
+    setShowChannelSettingsModal(state.current.context.showChannelSettingsModal.state);
     setShowCallModal(state.current.context.showCallModal);
     setShowCreateChannelModal(state.current.context.showCreateChannelModal);
   };
@@ -71,17 +68,14 @@ function Chat() {
       <div className={cx('wrapper')}>
         {showProflieSettingsModal && <ProflieSettingsModal />}
         {showCallModal && <CallModal data={callData} />}
-        {showChannelMembersModal && <GroupMembersModal id={channelId} />}
+        {showChannelMembersModal && <ChannelMembersModal />}
+        {showChannelSettingsModal && <ChannelSettingsModal />}
         {showUserMenu && <UserMenu />}
         {showCreateChannelModal && <CreateChannelModal />}
         <Header />
         <div className={cx('container')}>
           <Sidebar />
-          <div className={cx('content')}>
-            {directMessageId && !channelId && <DirectMessage directMessageId={directMessageId} />}
-            {!directMessageId && channelId && <ChannelMessage ChannelMessageId={channelId} />}
-            {!directMessageId && !channelId && <People />}
-          </div>
+          <div className={cx('content')}>{children}</div>
           {showUserProfile && <UserProfile />}
         </div>
       </div>
@@ -89,4 +83,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default UserScreen;

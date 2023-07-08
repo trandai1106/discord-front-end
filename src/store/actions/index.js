@@ -49,6 +49,13 @@ export const showChannelMembersModal = ({ state, channelId }) => {
   };
 };
 
+export const showChannelSettingsModal = ({ state, channelId }) => {
+  return {
+    type: Types.SHOW_CHANNEL_SETTINGS_MODAL,
+    payload: { state, channelId },
+  };
+};
+
 export const showCreateChannelModal = (show) => {
   return {
     type: Types.SHOW_CREATE_CHANNEL_MODAL,

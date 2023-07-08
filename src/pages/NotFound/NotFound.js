@@ -15,7 +15,7 @@ function NotFound() {
     if (!state.auth.isLoggedIn) {
       navigate('/login');
     } else {
-      navigate('/chat');
+      navigate('/allchannels');
     }
   }, [state]);
 

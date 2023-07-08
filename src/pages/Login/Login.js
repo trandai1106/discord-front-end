@@ -28,7 +28,7 @@ function Login() {
     });
 
     if (res.status === 1) {
-      navigate('/chat');
+      navigate('/allchannels');
       window.location.reload();
     } else {
       alert(res.message);

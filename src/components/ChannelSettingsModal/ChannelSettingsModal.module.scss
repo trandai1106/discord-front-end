@@ -18,7 +18,7 @@
 
 .container {
   width: 500px;
-  height: 200px;
+  height: 350px;
   background-color: white;
   border-radius: 10px;
   padding: 0 40px;
@@ -39,7 +39,20 @@
 }
 
 .content {
-  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .input-select {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .select {
+      width: 200px;
+    }
+  }
 
   .input-text {
     margin-bottom: 10px;
@@ -66,10 +79,20 @@
   }
 }
 
+.back-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
 .footer {
   position: absolute;
   left: 0;
   bottom: 0;
+  border-top: 1px solid #ccc;
   width: 100%;
   height: 60px;
   display: flex;
@@ -90,4 +113,12 @@
     background-color: rgb(31, 118, 0);
     color: #fff;
   }
+}
+
+.loading {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

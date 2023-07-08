@@ -19,6 +19,15 @@ const channelMessageAPI = {
       console.log('Error', err);
     }
   },
+  searchMessages: async ({ channelId, query }) => {
+    try {
+      const url = `/chat/channel/search/${channelId}?q=${query}`;
+      const res = await axiosClient.get(url);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
 };
 
 export default channelMessageAPI;

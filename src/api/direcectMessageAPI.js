@@ -28,6 +28,18 @@ const direcectMessageAPI = {
       console.log('Error', err);
     }
   },
+  searchMessage: async ({ from_id, to_id, query }) => {
+    try {
+      const url = `/chat/direct/search?q=${query}`;
+      const res = await axiosClient.post(url, {
+        from_id: from_id,
+        to_id: to_id,
+      });
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
 };
 
 export default direcectMessageAPI;

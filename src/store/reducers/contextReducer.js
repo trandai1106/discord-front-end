@@ -13,6 +13,7 @@ export const initialState = {
     channelId: '',
   },
   showCreateChannelModal: false,
+  showChannelSettingsModal: false,
 };
 
 const context = (state = initialState, action) => {
@@ -46,6 +47,11 @@ const context = (state = initialState, action) => {
       return {
         ...state,
         showCreateChannelModal: action.payload,
+      };
+    case Types.SHOW_CHANNEL_SETTINGS_MODAL:
+      return {
+        ...state,
+        showChannelSettingsModal: action.payload,
       };
     default:
       return state;

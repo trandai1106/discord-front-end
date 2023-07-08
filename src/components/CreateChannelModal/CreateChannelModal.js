@@ -8,11 +8,13 @@ import styles from './CreateChannelModal.module.scss';
 import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
 import channelAPI from '../../api/channelAPI';
+import socket from '../../socket';
 
 const cx = classNames.bind(styles);
 
 function CreateChannelModal() {
   const [name, setName] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
   const [cookies] = useCookies();
 
   const handleClose = () => {
@@ -28,8 +30,11 @@ function CreateChannelModal() {
     const res = await channelAPI.createChannel({
       admin: cookies.id,
       name: name,
+      private: isPrivate,
     });
     console.log(res);
+    socket.emit('update_channel_members');
+
     if (res.status) {
       store.dispatch(Actions.showCreateChannelModal(false));
     } else {
@@ -48,7 +53,25 @@ function CreateChannelModal() {
             </div>
           </div>
           <div className={cx('content')}>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Channel name"></input>
+            <div className={cx('input-text')}>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Channel name"
+              ></input>
+            </div>
+            <div className={cx('input-checkbox')}>
+              Private ?
+              <input
+                type="checkbox"
+                value={isPrivate}
+                onChange={(e) => {
+                  console.log(e.target.checked);
+                  setIsPrivate(e.target.checked);
+                }}
+              ></input>
+            </div>
           </div>
           <div className={cx('footer')}>
             <div className={cx('btn')} onClick={handleClose}>

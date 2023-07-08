@@ -25,7 +25,7 @@ function ProflieSettingsModal() {
     setName(e.target.value);
   };
 
-  const onSubmit = async () => {
+  const handleSubmit = async () => {
     if (name !== '' && name !== myUser.name) {
       const res = await userAPI.upLoadUserInfo({
         userId: myUser.id,
@@ -93,7 +93,7 @@ function ProflieSettingsModal() {
             <div className={cx('btn')} onClick={handleClose}>
               Cancel
             </div>
-            <div className={cx('btn', 'primary')} onClick={onSubmit}>
+            <div className={cx('btn', 'primary')} onClick={handleSubmit}>
               Save changes
             </div>
           </div>

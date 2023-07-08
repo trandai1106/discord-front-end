@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { faSortDown, faSortUp, faHashtag, faUserGroup, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSortDown, faSortUp, faHashtag, faUser, faPlus, faLock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,7 +38,11 @@ function Sidebar() {
       getSizebarOptions();
     });
 
-    socket.on('s_roomMessage', () => {
+    socket.on('s_channelMessage', () => {
+      getSizebarOptions();
+    });
+
+    socket.on('update_channel', () => {
       getSizebarOptions();
     });
   }, []);
@@ -90,22 +94,36 @@ function Sidebar() {
       <div className={cx('spread')}></div>
       <div className={cx('list')}>
         <SidebarNav
-          title="People"
-          icon={faUserGroup}
+          title="All channels"
+          icon={faUsers}
           onClick={() => {
-            navigate('/chat');
+            navigate('/allchannels');
+          }}
+        />
+        <SidebarNav
+          title="People"
+          icon={faUser}
+          onClick={() => {
+            navigate('/people');
           }}
         />
         <SidebarNav
           title="Channels"
-          icon={showChannels ? faSortUp : faSortDown}
+          icon={showChannels ? faSortDown : faSortUp}
           onClick={() => {
             setShowChannels(!showChannels);
           }}
         />
         {showChannels &&
-          channels.map((room, index) => {
-            return <ChannelOption key={index} title={room.name} icon={faHashtag} id={room._id} />;
+          channels.map((channel, index) => {
+            return (
+              <ChannelOption
+                key={index}
+                title={channel.name}
+                icon={channel.private ? faLock : faHashtag}
+                id={channel._id}
+              />
+            );
           })}
         <div className={cx('add-channel')} onClick={handleAddChannel}>
           <FontAwesomeIcon className={cx('add-channel-icon')} icon={faPlus} />
@@ -114,7 +132,7 @@ function Sidebar() {
         <div className={cx('spread')}></div>
         <SidebarNav
           title="Direct messages"
-          icon={showDirectMessages ? faSortUp : faSortDown}
+          icon={showDirectMessages ? faSortDown : faSortUp}
           onClick={() => setShowDirectMessages(!showDirectMessages)}
         />
         {showDirectMessages &&

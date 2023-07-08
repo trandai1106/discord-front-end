@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearchParams, useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 import styles from './DirectMessageOption.module.scss';
 import userAPI from '../../../api/userAPI';
@@ -18,6 +19,7 @@ function DirectMessageOption({ userId }) {
   const [notification, setNotification] = useState(false);
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const [cookies] = useCookies();
 
   useEffect(() => {
     //Funciton to get user information by id
@@ -34,7 +36,8 @@ function DirectMessageOption({ userId }) {
       }
     });
 
-    socket.emit('check_online_user', myUser.id);
+    socket.emit('check_online_user', cookies.id);
+
     const currentId = searchParams.get('direct-message');
     if (userId === currentId) {
       setNotification(false);
@@ -48,7 +51,7 @@ function DirectMessageOption({ userId }) {
   }, [location]);
 
   return (
-    <Link className={cx('wrapper')} to={`?direct-message=${user.id}`}>
+    <Link className={cx('wrapper')} to={`/direct-message/${user.id}`}>
       <div className={cx('avatar-container')}>
         <img className={cx('avatar')} src={avatarBaseUrl + user.avatar} alt="" />
         <div className={cx('status', isOnline ? 'active' : '')}></div>

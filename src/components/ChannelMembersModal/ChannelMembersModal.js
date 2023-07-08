@@ -10,6 +10,7 @@ import styles from './ChannelMembersModal.module.scss';
 import * as Actions from '../../store/actions/index';
 import store from '../../store/store';
 import channelAPI from '../../api/channelAPI';
+import socket from '../../socket';
 
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;
@@ -26,10 +27,10 @@ function ChannelMembersModal() {
 
   useEffect(() => {
     getMembersInChannel();
-    getGroupInfomation();
+    getChannelInfomation();
   }, []);
 
-  const getGroupInfomation = async () => {
+  const getChannelInfomation = async () => {
     const res = await channelAPI.getChannel(state.channelId);
     console.log(state.channelId, res);
     setAdminId(res.data.admin);
@@ -117,6 +118,8 @@ function ChannelMembersModal() {
       userId: userId,
     });
     console.log(res);
+    socket.emit('update_channel');
+
     setMembers(() => {
       return members.filter((member) => member._id !== userId);
     });
@@ -128,6 +131,8 @@ function ChannelMembersModal() {
       userId: userId,
     });
     console.log(res);
+    socket.emit('update_channel');
+
     setMembers(() => {
       return members.filter((member) => member._id !== userId);
     });
@@ -141,7 +146,7 @@ function ChannelMembersModal() {
             {addMember ? (
               <div className={cx('header__title')}>Add people</div>
             ) : (
-              <div className={cx('header__title')}>Group member</div>
+              <div className={cx('header__title')}>Channel member</div>
             )}
             <div onClick={handleClose} className={cx('close-icon')}>
               <FontAwesomeIcon icon={faXmark} />
@@ -224,7 +229,7 @@ function ChannelMembersModal() {
                   <FontAwesomeIcon icon={faSearch} />
                   <input
                     type="text"
-                    placeholder="Find members in group"
+                    placeholder="Find members in channel"
                     value={searchInput}
                     onChange={(e) => {
                       setSearchInput(e.target.value);

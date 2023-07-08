@@ -6,6 +6,7 @@ const SHOW_PROFILE_SETTINGS_MODAL = 'show_profile_settings_modal';
 const SHOW_CALL_MODAL = 'show_call_modal';
 const SHOW_CHANNEL_MEMBERS_MODAL = 'show_channel_members_modal';
 const SHOW_CREATE_CHANNEL_MODAL = 'show_create_channel_modal';
+const SHOW_CHANNEL_SETTINGS_MODAL = 'show_channel_settings_modal';
 
 export {
   SAVE_USER_TO_REDUX,
@@ -16,4 +17,5 @@ export {
   SHOW_CALL_MODAL,
   SHOW_CHANNEL_MEMBERS_MODAL,
   SHOW_CREATE_CHANNEL_MODAL,
+  SHOW_CHANNEL_SETTINGS_MODAL,
 };

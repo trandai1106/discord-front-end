@@ -28,9 +28,36 @@ const channelChatAPI = {
       console.log('Error', err);
     }
   },
+  searchChannelsByName: async (query) => {
+    try {
+      const url = `/channel/search/channel?q=${query}`;
+      const res = await axiosClient.get(url);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
   createChannel: async (data) => {
     try {
       const url = `/channel/create`;
+      const res = await axiosClient.post(url, data);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
+  updateChannel: async (data) => {
+    try {
+      const url = `/channel/update`;
+      const res = await axiosClient.put(url, data);
+      return res.data;
+    } catch (err) {
+      console.log('Error', err);
+    }
+  },
+  deleteChannel: async (data) => {
+    try {
+      const url = `/channel/delete`;
       const res = await axiosClient.post(url, data);
       return res.data;
     } catch (err) {

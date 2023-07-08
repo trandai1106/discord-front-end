@@ -4,9 +4,9 @@ import { useCookies } from 'react-cookie';
 import { useSearchParams, useLocation } from 'react-router-dom';
 
 import styles from './People.module.scss';
-import userAPI from '../../../api/userAPI';
-import store from '../../../store/store';
-import * as Actions from '../../../store/actions/index';
+import userAPI from '../../api/userAPI';
+import store from '../../store/store';
+import * as Actions from '../../store/actions/index';
 
 const cx = classNames.bind(styles);
 const avatarBaseUrl = process.env.REACT_APP_SERVER_URL;

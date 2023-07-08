@@ -128,7 +128,7 @@ function UserProfile() {
               </div>
             ) : (
               <>
-                <Link to={`?direct-message=${userId}`} className={cx('chat')}>
+                <Link to={`/direct-message/${userId}`} className={cx('chat')}>
                   Chat with {name} {isOnline ? ' - online' : ' - offline'}
                 </Link>
               </>
