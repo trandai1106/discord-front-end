@@ -1,44 +1,68 @@
-import React, { useEffect, useState }from "react";
-import "./Header.css";
-import { useNavigate } from 'react-router-dom'
-import authAPI from '../../api/authAPI'
+import classNames from 'classnames/bind';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
-export default function Header(props) {
+import styles from './Header.module.scss';
+import Profile from './Profile/Profile';
+
+const cx = classNames.bind(styles);
+
+function Header() {
+  const [inputValue, setInputValue] = useState('');
   const navigate = useNavigate();
-  let [userInfo, setUserInfo] = useState({});
+  const location = useLocation();
 
-  useEffect(() => {
-    (async () => {
-        let checkUser = await authAPI.getProfile();
+  const handleChangeInput = (e) => {
+    setInputValue(e.target.value);
+  };
 
-        if (checkUser.status != 0) {
-          if (checkUser.data.status != 0) {
-            userInfo = checkUser.data.data.user;
-            setUserInfo(userInfo);
-            console.log(userInfo);
-          }
-          else {
-            navigate('/auth/login');
-          }
-        }
-        else {
-            navigate('/auth/login');
-        }
-        // response = await response.json();;
-    })()
-  }, []);
+  const handleSumbit = (e) => {
+    if (inputValue.trim() === '') {
+      navigate(`${location.pathname}`);
+      return;
+    } else {
+      navigate(`${location.pathname}?q=${encodeURIComponent(inputValue)}`);
+    }
+  };
 
-  const clearToken = () => {
-    localStorage.removeItem('token');
-    navigate('/auth/login');
-  }
+  const getPlaceholder = (str) => {
+    if (str.includes('channel-message')) {
+      return 'messages';
+    }
+    if (str.includes('direct-message')) {
+      return 'messages';
+    }
+    if (str.includes('allchannels')) {
+      return 'channel';
+    }
+    if (str.includes('people')) {
+      return 'people';
+    }
+    return '';
+  };
 
   return (
-    <div className="header">
-      <div className="title">Discord</div>
-      <div className="user-infor">Name: {userInfo.name} - ID: {userInfo.id}</div>
-      <button onClick={clearToken}>Logout</button>
-      {/* <button className="login-button">Login</button> */}
+    <div className={cx('wrapper')}>
+      <div className={cx('input-container')}>
+        <input
+          className={cx('input')}
+          type="text"
+          value={inputValue}
+          placeholder={`Search ${getPlaceholder(location.pathname)}`}
+          onChange={handleChangeInput}
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              handleSumbit();
+            }
+          }}
+        ></input>
+        <FontAwesomeIcon className={cx('icon')} icon={faSearch} onClick={handleSumbit} />
+      </div>
+      <Profile />
     </div>
   );
 }
+
+export default Header;

@@ -5,8 +5,10 @@ import queryString from 'query-string';
 // Please have a look at here `https://github.com/axios/axios#request-
 // config` for the full list of configs
 
+const baseURL = process.env.REACT_APP_SERVER_URL;
+
 const axiosClient = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: baseURL,
     headers: {
         'content-type': 'application/json',
     },
@@ -14,11 +16,17 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use(async (config) => {
-    let token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    try {
+        const cookies = document.cookie.split(';');
+        const token = cookies.filter(cookie => cookie.includes("access_token="))[0].split('=')[1];
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    } catch (err) {
+        return config;
     }
-    return config;
 })
 
 axiosClient.interceptors.response.use((response) => {

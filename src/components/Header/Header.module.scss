@@ -1,0 +1,33 @@
+.wrapper {
+  width: 100%;
+  height: var(--header-height);
+  background-color: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.input-container {
+  height: 30px;
+  width: 500px;
+  border-radius: 9999px;
+  background-color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.input {
+  width: calc(100% - 40px);
+  margin-left: 20px;
+}
+
+.icon {
+  width: 40px;
+  font-size: 1.6rem;
+  color: var(--black);
+  cursor: pointer;
+}

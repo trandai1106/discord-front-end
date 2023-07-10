@@ -1,67 +1,65 @@
-import React, { useState, useEffect, useRef } from "react";
-import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import socketIOClient from "socket.io-client";
-import './App.css'
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
-import routes from './routes';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useCookies } from "react-cookie";
+
 import * as Actions from './store/actions';
-import { useDispatch } from 'react-redux';
-import LoginPage from './pages/LoginPage';
-import ChatPage from './pages/ChatPage';
-import Notfoundpage from './pages/Notfoundpage';
-
-// const host = "http://localhost:8080";
-
-// Pages
-// const Login = React.lazy(() => import("./views/login/Login"));
-
-
-// function App() {
-//   return (
-//   <>
-//       <Routes>
-//           <Route exact path="/" element={< Notfoundpage />} />
-//           <Route path="/auth/login" element={< LoginPage />} />
-//           <Route path="/chat" element={<ChatPage />} />
-//       </Routes>
-//   </>
-// )};
-
+import GlobalStyles from "./components/GlobalStyles/GlobalStyles";
+import { privateRoutes, publicRoutes } from "./routes";
+import store from "./store/store";
+import authAPI from "./api/authAPI";
 
 function App() {
+    const [cookies,] = useCookies();
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const dispatch = useDispatch();
+    useEffect(() => {
+        const token = cookies.access_token;
+        const id = cookies.id;
+        if (!token) {
+            console.log("Token not found");
+            setIsLoading(false);
+        } else {
+            authAPI.getProfile(id).then((res) => {
+                if (res.status === 1) {
+                    store.dispatch(Actions.saveUserToRedux(res.data.user));
+                    setIsLoggedIn(true);
+                    setIsLoading(false);
+                } else {
+                    document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                    document.cookie = 'id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                    setIsLoading(false);
+                }
+            });
+        }
+    }, []);
 
-  useEffect(() => {
-      const token = localStorage.getItem('token');
-      console.log("token: ", token);
-      dispatch(Actions.saveUserToRedux(token));
-  }, [])
-
-
-  //Tạo các Route
-  const showContentMenus = () => {
-      let result = null;
-      result = routes.map((route, index) => {
-          return (
-              <Route
-                  key={index}
-                  path={route.path}
-                  element={route.element}
-              />
-          )
-      })
-      return <Routes>{result}</Routes>;
-  }
-
-  return (
-      <Router>
-          {/* <ScrollToTop> */}
-              {showContentMenus(routes)}
-          {/* </ScrollToTop> */}
-      </Router>
-  );
+    return (
+        <GlobalStyles>
+            <Router>
+                {!isLoading && <Routes>
+                    {publicRoutes.map((route, index) => {
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={route.element}
+                            />
+                        )
+                    })}
+                    {isLoggedIn && privateRoutes.map((route, index) => {
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={route.element}
+                            />
+                        )
+                    })}
+                </Routes>}
+            </Router>
+        </GlobalStyles>
+    );
 }
 
 

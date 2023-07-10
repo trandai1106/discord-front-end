@@ -1,30 +1,45 @@
 import React from 'react';
-import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
-import ChatPage from './pages/ChatPage';
-import Notfoundpage from './pages/Notfoundpage';
+import Register from './pages/Register/Register';
+import Login from './pages/Login/Login';
+import UserScreen from './Screen/UserScreen';
+import ChannelMessage from './pages/ChannelMessage/ChannelMessage';
+import DirectMessage from './pages/DirectMessage/DirectMessage';
+import AllChannels from './pages/AllChannels/AllChannels';
+import People from './pages/People/People';
+import NotFound from './pages/NotFound/NotFound';
 
-const routes = [
-    {
-        path: '/auth/login',
-        element: <LoginPage /> // Ok
-    },
-    {
-        path: '/auth/register',
-        element: <RegisterPage /> // Ok
-    },
-    // {
-    //     path: '/public-channel',
-    //     element: <ChatPage /> // Ok
-    // },
-    {
-        path: '/direct-message/:to_id',
-        element: <ChatPage /> // Ok
-    },
-    {
-        path: '*',
-        element: <Notfoundpage />
-    },
-]
+export const publicRoutes = [
+  {
+    path: '/register',
+    element: <Register />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+];
 
-export default routes;
+export const privateRoutes = [
+  {
+    path: '/people',
+    element: <UserScreen children={<People />} />,
+  },
+  {
+    path: '/allchannels',
+    element: <UserScreen children={<AllChannels />} />,
+  },
+  {
+    path: '/channel-message/:channelId',
+    element: <UserScreen children={<ChannelMessage />} />,
+  },
+  {
+    path: '/direct-message/:directId',
+    element: <UserScreen children={<DirectMessage />} />,
+  },
+];
+
+// export default routes;

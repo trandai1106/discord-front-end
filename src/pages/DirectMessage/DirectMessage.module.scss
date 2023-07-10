@@ -1,0 +1,148 @@
+.wrapper {
+  height: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  position: relative;
+}
+
+.resize {
+  position: absolute;
+  left: 0;
+  width: 6px;
+  height: calc(100vh - var(--header-height));
+  transform: translateX(-50%);
+  background-color: transparent;
+  cursor: w-resize;
+
+  &.resize-wide {
+    width: 400px;
+  }
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  flex-direction: column;
+  color: var(--black);
+}
+
+.channel-header {
+  width: 100%;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding: 0 20px;
+
+  .channel-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    .action {
+      cursor: pointer;
+      position: relative;
+
+      .actions-container {
+        position: absolute;
+        left: 30px;
+        top: 8px;
+        width: 160px;
+        padding: 10px 20px;
+        background-color: #fff;
+        z-index: 10;
+        border: 1px solid #ccc;
+        cursor: default;
+
+        .item {
+          padding: 6px 0;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .call-icon {
+    cursor: pointer;
+  }
+
+  &::after {
+    position: absolute;
+    content: '';
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--border-color);
+  }
+}
+
+.messages {
+  height: calc(100% - var(--header-height) - 90px);
+  overflow-y: scroll;
+  /* width */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #e2e2e2;
+    border-radius: 4px;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a7a7a7;
+  }
+}
+
+.input-container {
+  width: calc(100% - 40px);
+  margin: 20px;
+  height: 40px;
+  border-radius: 10px;
+  border: solid 1px #ccc;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.input {
+  width: calc(100% - 20px);
+  margin: 0 20px;
+}
+
+.icon {
+  width: 40px;
+  color: #757575;
+  cursor: pointer;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.zero-message {
+  margin-left: 20px;
+}

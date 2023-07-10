@@ -1,0 +1,47 @@
+.message {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.message > img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 10px;
+  // border-radius: 50%;
+}
+
+.content {
+  margin-left: 10px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+
+  .username {
+    cursor: pointer;
+  }
+}
+
+.message-timestamp {
+  margin-left: 10px;
+  color: var(--gray);
+  font-weight: 300;
+  font-size: 13px;
+}
+
+@media only screen and (max-width: 400px) {
+  .title {
+    margin-top: 10px;
+  }
+}
+
+.delete {
+  margin-left: 10px;
+  cursor: pointer;
+  color: red;
+  font-weight: 300;
+  font-size: 13px;
+}

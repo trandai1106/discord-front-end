@@ -1,0 +1,52 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-left: 30px;
+  transition: 0.5s;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.avatar-container {
+  position: relative;
+
+  .avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+  }
+
+  .status {
+    position: absolute;
+    bottom: 0;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background-color: #4e4e4e;
+  }
+
+  .status.active {
+    background-color: #00ff00;
+  }
+}
+
+.title {
+  margin-left: calc(50px - 24px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification {
+  margin: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background-color: red;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
