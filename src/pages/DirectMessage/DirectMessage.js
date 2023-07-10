@@ -177,11 +177,6 @@ function DirectMessage() {
     });
   };
 
-  const handleShowActions = () => {
-    console.log(showActions);
-    setShowActions(!showActions);
-  };
-
   const renderActions = () => {
     return (
       <div className={cx('actions-container')}>
@@ -203,13 +198,7 @@ function DirectMessage() {
       {partner ? (
         <div className={cx('main')}>
           <div className={cx('channel-header')}>
-            <div className={cx('channel-name')}>
-              {partner ? partner.name : ''}
-              <div className={cx('action')} onClick={handleShowActions}>
-                <FontAwesomeIcon icon={faChevronDown} />
-                {showActions && renderActions()}
-              </div>
-            </div>
+            <div className={cx('channel-name')}>{partner ? partner.name : ''}</div>
             <div className={cx('call-icon')} onClick={makeVideoCall}>
               <FontAwesomeIcon icon={faPhone} />
             </div>
